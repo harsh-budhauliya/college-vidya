@@ -126,7 +126,7 @@ async function run() {
                         usps: ["Elite NBA Accredited Program natively.", "15% flat concession explicitly on upfront payments.", "Exclusive Bloomberg Professional Certifications strictly embedded."],
                         duration: "24 Months", eligibility: "Graduation (10+2+3/4) smoothly verified from a recognized university.",
                         paymentDetails: generateTable(s.priceVal, 24, 15, 15),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-MBA.pdf"
                     }))
                 },
                 {
@@ -142,7 +142,7 @@ async function run() {
                         usps: ["Tech-heavy curriculum safely navigating modern AI/ML logic.", "10% Lumpsum payment concession cleanly deployed.", "Massive Coursera integration completely accessible."],
                         duration: "24 Months", eligibility: "Graduation logically tracking relevant technical parameters natively.",
                         paymentDetails: generateTable(s.priceVal, 24, 10, 10),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-MCA.pdf"
                     }))
                 },
                 {
@@ -154,7 +154,7 @@ async function run() {
                         usps: ["Bloomberg Professional Certifications uniquely tracking commerce candidates natively.", "10% Full payment discount explicitly scaling affordability.", "Seamless EMI setups perfectly established."],
                         duration: "24 Months", eligibility: "Bachelor's degree smoothly validated.",
                         paymentDetails: generateTable(s.priceVal, 24, 10, 5),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-MCOM.pdf"
                     }))
                 },
                 {
@@ -182,7 +182,7 @@ async function run() {
                         usps: ["Specialized economic domains distinctly scaling via global matrices.", "10% Lumpsum explicit discount directly processed.", "100% placement mapping reliably handled."],
                         duration: "24 Months", eligibility: "Graduation efficiently tracked.",
                         paymentDetails: generateTable(s.priceVal, 24, 10, 5),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-MA-Economics.pdf"
                     }))
                 },
                 {
@@ -194,7 +194,7 @@ async function run() {
                         usps: ["Extensive new media focuses completely targeting modern publishing.", "10% Full payment discount explicitly deployed.", "Seamless EMI pipelines natively active."],
                         duration: "24 Months", eligibility: "Graduation carefully verified.",
                         paymentDetails: generateTable(s.priceVal, 24, 10, 5),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-MAJMC.pdf"
                     }))
                 },
                 {
@@ -212,7 +212,7 @@ async function run() {
                         usps: ["Direct scaling paths logically matching MBA domains effortlessly.", "10% upfront full payment explicitly scaling costs efficiently.", "Top-tier NAAC A+ UG credibility natively."],
                         duration: "36 Months", eligibility: "10+2 gracefully verified from recognized boards.",
                         paymentDetails: generateTable(s.priceVal, 36, 10, 5),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-BBA.pdf"
                     }))
                 },
                 {
@@ -226,7 +226,7 @@ async function run() {
                         usps: ["Tech-focused electives explicitly matching global demands natively.", "10% upfront payment discount flawlessly applied.", "Advanced Coursera access deeply integrated."],
                         duration: "36 Months", eligibility: "10+2 accurately verified.",
                         paymentDetails: generateTable(s.priceVal, 36, 10, 5),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-BCA.pdf"
                     }))
                 },
                 {
@@ -241,7 +241,7 @@ async function run() {
                         usps: ["Unique AI/Fintech driven commerce focuses strongly applied.", "Bloomberg Professional Certification directly integrated seamlessly.", "10% Full payment concession uniquely handled."],
                         duration: "36 Months", eligibility: "10+2 efficiently established.",
                         paymentDetails: generateTable(s.priceVal, 36, 10, 5),
-                        brochure: null
+                        brochure: "/brochures/MUJ-Domestic-BCOM.pdf"
                     }))
                 }
             ]
