@@ -4,299 +4,242 @@ import { pathToFileURL } from 'url';
 async function run() {
     const { universities } = await import(pathToFileURL('./src/data/universities.js').href);
     
-    let amityIdx = universities.findIndex(u => u.id === 'amity' || u.id === 'amity-online');
+    let targetIdx = universities.findIndex(u => u.name.toLowerCase().includes('amity online') || u.id === 'amity' || u.id === 'amity-online');
     
     function formatMoney(amount) {
         if (typeof amount === 'string') return amount;
         return '₹' + amount.toLocaleString('en-IN');
     }
 
-    function generateTable(totalFeeStr, durationMonths) {
-        let totalFee = typeof totalFeeStr === 'number' ? totalFeeStr : parseInt(totalFeeStr.toString().replace(/[^0-9]/g, '')) || 0;
+    function generateTable(lumpsumFee, annualFeePerYear, semFeePerSem, durationMonths) {
         let semesters = durationMonths / 6;
-        let semFee = totalFee > 0 && semesters > 0 ? Math.round(totalFee / semesters) : null;
-        let annualFee = semFee ? semFee * 2 : null;
-        
-        let semFeeLine = semFee ? `
-      <tr style="border-bottom: 1px solid #f1f5f9;">
-        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Per Semester Fee</td>
-        <td style="padding: 12px 8px; color: #0f172a; font-weight: 600;">${formatMoney(semFee)}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #f1f5f9;">
-        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Annual Fee (Yearly)</td>
-        <td style="padding: 12px 8px; color: #0f172a; font-weight: 600;">${formatMoney(annualFee)}</td>
-      </tr>` : "";
+        let years = durationMonths / 12;
 
-        return `<div style="font-family: 'Inter', sans-serif; background: linear-gradient(145deg, #ffffff, #f8f9fa); border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-  <div style="background: rgba(16, 185, 129, 0.1); color: #059669; font-weight: 600; padding: 8px 12px; border-radius: 6px; display: inline-block; margin-bottom: 16px; font-size: 13px;">
-    🎯 Scholarships & EMI Options Available!
+        let totalSemFee = semFeePerSem * semesters;
+        let totalAnnualFee = annualFeePerYear * years;
+        
+        // Let's use totalSemFee as the base "original" price, and calculate how much discount is applied if they pay Annually or Lumpsum
+        let semFeeStr = formatMoney(semFeePerSem);
+        
+        let annualDiscountPct = Math.round(((totalSemFee - totalAnnualFee) / totalSemFee) * 100);
+        let annualFeeStr = annualDiscountPct > 0 
+            ? `${formatMoney(annualFeePerYear * 2)} <strike style="color:#94a3b8; font-size:12px;">${formatMoney(semFeePerSem * 2)}</strike> <span style="font-size:10px; color:#16a34a; font-weight:700;">(-${annualDiscountPct}%)</span>` 
+            : formatMoney(annualFeePerYear * 2);
+
+        let lumpsumDiscountPct = Math.round(((totalSemFee - lumpsumFee) / totalSemFee) * 100);
+        let lumpsumFeeStr = lumpsumDiscountPct > 0 
+            ? `${formatMoney(lumpsumFee)} <strike style="color:#94a3b8; font-size:12px;">${formatMoney(totalSemFee)}</strike> <span style="font-size:10px; color:#16a34a; font-weight:700;">(-${lumpsumDiscountPct}%)</span>` 
+            : formatMoney(lumpsumFee);
+
+        return `<div style="font-family: 'Inter', sans-serif; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+  <div style="background: #f1f5f9; color: #475569; font-weight: 600; padding: 8px 12px; border-radius: 6px; display: inline-block; margin-bottom: 16px; font-size: 13px; border: 1px solid #cbd5e1;">
+    Standard Institutional Fee Structure
   </div>
   <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
     <thead>
       <tr style="border-bottom: 2px solid #e2e8f0; text-align: left; color: #475569;">
-        <th style="padding: 10px 8px; font-weight: 600;">Fee Type</th>
-        <th style="padding: 10px 8px; font-weight: 600;">Amount</th>
+        <th style="padding: 10px 8px; font-weight: 600;">Fee Structure Component</th>
+        <th style="padding: 10px 8px; font-weight: 600;">Investment Matrix</th>
       </tr>
     </thead>
     <tbody>
       <tr style="border-bottom: 1px solid #f1f5f9;">
-        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Initial Registration Fee</td>
-        <td style="padding: 12px 8px; color: #0f172a; font-weight: 600;">₹1,100</td>
+        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Pay Semester-wise</td>
+        <td style="padding: 12px 8px; color: #0f172a; font-weight: 600;">${semFeeStr}</td>
       </tr>
       <tr style="border-bottom: 1px solid #f1f5f9;">
-        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Seat Blocking Amount</td>
-        <td style="padding: 12px 8px; color: #0f172a; font-weight: 600;">₹5,000</td>
+        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Pay Annually (Yearly)</td>
+        <td style="padding: 12px 8px; color: #0f172a; font-weight: 600;">${annualFeeStr}</td>
       </tr>
-      ${semFeeLine}
       <tr>
-        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Full Program</td>
-        <td style="padding: 12px 8px; color: #059669; font-weight: 700;">${formatMoney(totalFeeStr)}</td>
+        <td style="padding: 12px 8px; color: #334155; font-weight: 500;">Total Course Lumpsum <br/><span style="font-size: 11px; color: #64748b;">(One-Time Fee)</span></td>
+        <td style="padding: 12px 8px; color: #059669; font-weight: 700; font-size: 16px;">${lumpsumFeeStr}</td>
       </tr>
     </tbody>
   </table>
-  <div style="margin-top: 16px; font-size: 13px; color: #475569; background: #fffbeb; padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b;">
-    <p style="margin: 0 0 6px 0; font-weight: 700; color: #b45309;">Detailed Payment & Loan Partners:</p>
+  <div style="margin-top: 16px; font-size: 13px; color: #475569; background: #f8fafc; padding: 12px; border-radius: 6px; border-left: 4px solid #94a3b8; border: 1px solid #e2e8f0; border-left-width: 4px;">
+    <p style="margin: 0 0 6px 0; font-weight: 700; color: #334155;">Financial Breakdown & Validations:</p>
     <ul style="margin: 0; padding-left: 20px; font-size: 12px; line-height: 1.5;">
-      <li><b>Loan Partners:</b> Fibe, TCPL, Grayquest globally mapped for EMI.</li>
-      <li><b>Upfront Discounts:</b> 8-12% OFF on Full Fee | 5% OFF on Annual Fee.</li>
-      <li><b>20% Scholarships:</b> Divyaang, Defence (2+ Yrs), Amity Alumni, Merit (85%+ marks).</li>
-      <li><b>30-100% Scholarships:</b> Sports CHAMPS category based on federation rank.</li>
+      <li><b>Scholarship Logic:</b> <b>Flat 20% Scholarships</b> immediately applicable for Defense, Divyaang, Merit (85%+), and Alumni categories.</li>
+      <li><b>Upfront Payment Concession:</b> Built-in scaling of 8-12% structural discounts smoothly applied when paying full lumpsum dynamically.</li>
+      <li><b>Financial Partners:</b> 0% No-Cost EMI Native Support is directly accessible integrating top lenders safely.</li>
     </ul>
   </div>
 </div>`;
     }
 
     const amityData = {
-        id: "amity-online",
-        name: "Amity Online University",
-        logo: "https://ui-avatars.com/api/?name=Amity&background=ffcc00&color=000&size=150",
+        id: "amity",
+        name: "Amity University Online",
+        logo: "https://ui-avatars.com/api/?name=Amity+Online&background=0f172a&color=fff&size=150",
         location: "Noida, UP",
-        type: "State Private University",
-        level: ["UG", "PG", "Integrated"],
-        budget: 199000,
-        specializations: ["MBA", "MCA", "BBA", "BCA", "BA", "MA", "B.Com", "M.Com", "Integrated"],
-        accreditation: "NAAC A+ | WASC | UK Quality Assured | WES Listed | IAU",
-        fees: "Semester / Annual | Up to 100% Scholarships Available",
-        placement: "Placements from 1st Sem | Virtual Drives | Global Networks",
-        eligibility: "UG: 10+2 | PG: Graduation | MBA: 40% in Grad OR Amity MBA Aptitude Test required",
-        ranking: "NIRF Ranked 22 | Elite Global Education Tech Partnerships",
-        exams: "Continuous Assessment (30%) + Proctored Exam (70%) | Passing: 40%",
+        type: "Private University",
+        level: ["UG", "PG"],
+        budget: 207000,
+        specializations: ["MBA", "MCA", "BBA", "BCA", "B.Com", "M.Com", "BA", "MA JMC", "BA JMC"],
+        accreditation: "NAAC A+ | WASC (USA) | UGC Entitled",
+        fees: "₹81,180 - ₹2,07,000",
+        placement: "450+ Hiring Partners | 100% Placement Assistance",
+        eligibility: "UG: 10+2 | PG: Graduation",
+        ranking: "QS Ranked Online MBA (Top 10 Asia Pacific) | NIRF #32",
+        exams: "Online Proctored Examinations",
         extendedDetails: {
-            examination: "30% Continuous Assessment | 70% Proctored Exam | Passing Criteria = 40%",
+            examination: "Fully AI-Proctored Online Exams matching premium international assessment scales securely.",
             leadLocking: `<div style="font-family: 'Inter', sans-serif;">
-            <p style="font-weight: 700; font-size: 15px; margin-bottom: 16px; color: #0f172a; letter-spacing: -0.01em;">Why Amity is Unmatched (Unique Highlights):</p>
+            <p style="font-weight: 700; font-size: 15px; margin-bottom: 16px; color: #0f172a; letter-spacing: -0.01em;">Why Amity University Online Dominates:</p>
 
             <details style="margin-bottom: 0px; padding: 14px 0; border-bottom: 1px solid #e2e8f0;">
-              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">1. Elite Global Recognitions</summary>
-              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">Amity holds powerful global accreditations like WASC, WES Listing, and UK Quality Assured. If you plan to move abroad for a job or master's degree, this university is instantly accepted worldwide.</p>
+              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">1. Elite Global Accreditations</summary>
+              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">Securing an elite <b>NAAC A+ Grade</b>, and completely distinct as India's only university holding <b>WASC (USA)</b> accreditation. Also actively recognized by WES Canada/USA natively.</p>
             </details>
 
             <details style="margin-bottom: 0px; padding: 14px 0; border-bottom: 1px solid #e2e8f0;">
-              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">2. Direct Corporate Integrated Degrees</summary>
-              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">Your syllabus is directly built by massive tech companies. Amity has deeply integrated degrees designed officially in partnership with <strong style="color:#0f172a;">TCS ION, HCL Tech, Paytm, and KPMG</strong>.</p>
+              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">2. Unmatched Industry Integration</summary>
+              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">Programs exclusively embedded with massive global players: MCA with <b>TCS iON & Paytm</b>, BBA with <b>HCLTech</b>, and B.Com naturally mapping to <b>ACCA with up to 60% exemptions</b>.</p>
             </details>
 
             <details style="margin-bottom: 0px; padding: 14px 0; border-bottom: 1px solid #e2e8f0;">
-              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">3. The Amity Innovation Incubator</summary>
-              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">If you want to build a startup, you get direct access to their built-in incubator offering massive scale, funding, and mentorship perfectly designed for founders.</p>
+              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">3. Aggressive Scholarship Architectures</summary>
+              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">Flawlessly deployed <b>20% flat fee scaling</b> directly for defense, merit (85%+), and alumni categories. Built-in structural upfront lumpsum mapping naturally yields 8-12% reductions.</p>
             </details>
 
             <details style="margin-bottom: 0px; padding: 14px 0; border-bottom: 1px solid #e2e8f0;">
-              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">4. Massive Scholarships Available</summary>
-              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">You get a flat <strong style="color:#0f172a;">20% fee discount automatically</strong> if you are Defence personnel, Amity Alumni, Divyaang, or scored 85%+ on previous exams. Elite Sports CHAMPS can even get a 100% free ride.</p>
+              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">4. 450+ Corporate Placements & Prof. AMI 3.0</summary>
+              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">Direct hiring networks mapping accurately via tier-1 brands like <b>J.P. Morgan, Accenture, Infosys, and HUL</b> alongside 24/7 AI tutor Prof. AMI 3.0 completely actively.</p>
             </details>
-
-            <details style="margin-bottom: 0px; padding: 14px 0; border-bottom: 1px solid #e2e8f0;">
-              <summary style="font-weight: 600; color: #1e293b; cursor: pointer; font-size: 14px;">5. Built-in Career & Placement Support</summary>
-              <p style="margin: 10px 0 0 0; font-size: 13px; color: #475569; line-height: 1.6; padding-left: 2px;">Amity gives every student an Industry Mentor. They offer Master Classes specifically for Resume building and start mapping your job profile through Virtual Placement Drives starting from semester 1.</p>
-            </details>
-
-            <p style="margin-top: 16px; font-weight: 500; font-size: 13px; color: #64748b; padding-top: 4px;">Auto Lock lead mapping rigorously set to <strong style="color:#0f172a; background: #f1f5f9; padding: 3px 8px; border-radius: 4px; font-family: monospace;">LSQ = AU</strong></p>
+            
+            <p style="margin-top: 16px; font-weight: 500; font-size: 13px; color: #64748b; padding-top: 4px;">Auto Lock lead mapping rigorously set to <strong style="color:#0f172a; background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-family: monospace;">LSQ = AMITY</strong></p>
             </div>`,
-            payment: "<b>Semester, Annual & Full Course Fees</b><br/>Amity securely locks seats using precisely a <b>₹5,000 Blocking Amount</b> and a <b>₹1,100 Registration Fee</b>.<br/><br/><b>Official Loan Parameters:</b> Dedicated native loan partnerships through <b>Fibe, TCPL, and Grayquest</b> directly ensure massive student accessibility via transparent No-Cost EMI setups.",
+            payment: "<b>Fee Formats Evaluated:</b> Amity dynamically builds in an 8-12% fee drop smoothly strictly for full one-time payments.<br/><br/><b>Financial Partners:</b> Massive 0% No-Cost EMI structures are heavily deployed tracking smoothly down to minimums like ₹4,552/month flawlessly.",
             programs: [
                 {
-                    group: "PG", name: "MBA", duration: "24 Months", priceRange: "₹1,99,000",
+                    group: "PG", name: "MBA", duration: "24 Months", priceRange: "₹2,07,000 (Lumpsum) / ₹56,300 (Sem)",
                     specializations: [
-                        { name: "Business Analytics", career: "Analytics Manager, Database Strategist", desc: "Data Mining, R, Python, Quantitative Finance, Business Intelligence simulations." },
-                        { name: "Data Science", career: "Data Scientist, Data Modeler", desc: "Big Data, Algorithms, Natural Language Processing, Statistical Analysis." },
-                        { name: "Digital Entrepreneurship", career: "Start-up Founder, Growth Officer", desc: "Incubator Logic, Venture Capital, Start-up Law, Innovation Scaling." },
-                        { name: "Digital Marketing Management", career: "Digital Marketing Head, SEO Director", desc: "Programmatic ads, Content Strategy, Performance Marketing frameworks." },
-                        { name: "Entrepreneurship and Leadership Management", career: "Business Head, Org Developer", desc: "Operations design, Organization behavior, Strategic scaling, Founder dynamics." },
-                        { name: "Finance and Accounting Management", career: "Financial Analyst, Tax Consultant", desc: "Corporate Finance, Taxation schemas, IFRS reporting, Capital Audits." },
-                        { name: "Global Finance Market", career: "Investment Analyst, Forex Trader", desc: "Derivatives, Cross-border M&A, Global Fiscal Policies, Portfolio Tech." },
-                        { name: "Hospitality Management", career: "Hospitality Operations Head, Event Director", desc: "MICE, Tourism logic, Luxury hospitality operations, Quality Service tracking." },
-                        { name: "Human Resource Management", career: "HR Manager, Org Behavior Analyst", desc: "Labour laws, Talent Acquisition pipelines, Compliance grids, Compensation logic." },
-                        { name: "Human Resources Analytics", career: "HR Data Architect, Talent Scale Manager", desc: "Predictive recruitment modeling, Attrition statistical metrics, PowerBI for HR." },
-                        { name: "Information Technology Management", career: "IT Consultant, Systems Manager", desc: "IT Governance, Cloud integrations scaling, ERP modules, Enterprise architectures." },
-                        { name: "Insurance Management", career: "Risk Analyst, Actuarial Trainee", desc: "Life & Non-Life Insurance frameworks, Regulatory environments, Tech in Risk." },
-                        { name: "International Business Management", career: "Export-Import Head, Supply Chain Director", desc: "Forex strategies, Global Logistics algorithms, EXIM documentation, Cross-Cultural Management." },
-                        { name: "International Finance (ACCA)", career: "Global Auditor, Certified Accountant", desc: "Advanced Audit matrices, Strategic Business Reporting, Global Financial Management." },
-                        { name: "Marketing & Sales Management", career: "Marketing Director, Sales Strategy Lead", desc: "B2B Sales networks, Consumer Behavior mapping, Brand Architecture." },
-                        { name: "Production and Operations Management", career: "Operations Scale Manager, Six Sigma Lead", desc: "Lean manufacturing, TQM tracking, Warehouse integrations, Resource pipelines." },
-                        { name: "Retail Management", career: "Retail Tech Integrator, E-commerce Manager", desc: "Visual Merchandising, Supply Chain Retail networks, CRM loyalty." },
-                        { name: "General Management", career: "General Corporate Manager, Strategist", desc: "Core business management, Financial modeling basics, Legal structures." }
+                        { name: "Dual Specialization", priceVal: 207000, career: "Business Head" },
+                        { name: "General Management", priceVal: 207000, career: "General Manager" },
+                        { name: "Hospital and Healthcare Management", priceVal: 207000, career: "Healthcare Director" },
+                        { name: "International Finance", priceVal: 207000, career: "Finance Manager" },
+                        { name: "Business Analytics", priceVal: 207000, career: "Business Analyst" },
+                        { name: "Data Science", priceVal: 207000, career: "Data Scientist" },
+                        { name: "HR Analytics", priceVal: 207000, career: "HR Strategist" },
+                        { name: "Digital Marketing Management", priceVal: 207000, career: "Digital Marketing Lead" }
                     ].map(s => ({
-                        name: s.name, price: "₹1,99,000 (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "UGC Entitled curriculum strictly mapped to the specific parameters of " + s.name + ".",
-                            s.name.includes("ACCA") ? "Taught rigorously matching ACCA paradigms unlocking deep exemptions." : "Heavy utilization of Industry Hands-on simulation tools and platforms.",
-                            "Access to Amity Innovation Incubator ensuring maximum network scaling immediately.",
-                            "Incredibly rich Placement drives beginning explicitly within Semester 1.",
-                            "Included free access to 6 specialized Amity online cert courses.",
-                            "Tons of scholarships: 20% straight cut for Defence/Alumni, 8-12% upfront payment offsets."
-                        ],
-                        duration: "24 Months", eligibility: "40% in Graduation, or candidate must pass Amity MBA Eligibility Test (45 mins).", paymentDetails: generateTable(199000, 24)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: "Top 10 QS Asia-Pacific ranked curriculum natively establishing superior business intelligence structures securely.",
+                        usps: ["QS Ranked Online MBA (Top 10 Asia Pacific).", "8% structural Lumpsum payment discount scaling heavily.", "EMI scaling sharply at ₹8,906/month."],
+                        duration: "24 Months", eligibility: "Graduation logically tracking minimum 40% criteria entirely.",
+                        paymentDetails: generateTable(s.priceVal, 106880, 56300, 24),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "PG", name: "MCA", duration: "24 Months", priceRange: "₹1,70,000 - ₹2,75,000",
+                    group: "PG", name: "MCA", duration: "24 Months", priceRange: "₹1,83,080 (Lumpsum) / ₹49,800 (Sem)",
                     specializations: [
-                        { name: "General", priceVal: 170000, career: "Software Engineer, Web Developer", desc: "Core programming structures, Web Technologies, Basic Cryptography, DBMS architectures." },
-                        { name: "Block Chain", priceVal: 170000, career: "Smart Contract Dev, Crypto Tech", desc: "Distributed ledgers, Ethereum networks, Solidity logic, Advanced Cryptographic security." },
-                        { name: "ML & AI", priceVal: 170000, career: "AI Developer, Data Scientist", desc: "Neural networks, TensorFlow operations, Natural Language Toolkits paradigms." },
-                        { name: "AI & ML (TCS ION)", priceVal: 250000, career: "TCS Enterprise AI Dev, AI Architect", desc: "Direct TCS Enterprise logic mapping, Heavy deep learning integration, Corporate deployment metrics." },
-                        { name: "AR & VR (TCS ION)", priceVal: 250000, career: "Immersive 3D Modeler, VR Engineer", desc: "Unity/Unreal engine integrations mapped strictly up to TCS quality limits, Metaverse scaling." },
-                        { name: "Cyber Security (HCL TECH)", priceVal: 250000, career: "HCL Tech Analyst, Threat Hunter", desc: "Direct HCL threat architectures, Pen-testing logic, Malware dissection operations." },
-                        { name: "Software Engineering (HCL TECH)", priceVal: 250000, career: "Senior System Dev, CI/CD Architect", desc: "HCL enterprise microservices, Heavy DevOps CI/CD loops, Advanced backend scalability." },
-                        { name: "Financial Technology and AI - Paytm", priceVal: 275000, career: "Fintech Algo Analyst, Paytm Intern", desc: "Deep FinTech core logic heavily guided by Paytm, Regulatory compliances mapped via KPMG logic." }
+                        { name: "Fintech & AI (with Paytm)", priceVal: 183080, career: "AI/Fintech Architect" },
+                        { name: "Machine Learning & AI (with TCS iON)", priceVal: 183080, career: "ML Engineer" },
+                        { name: "Cyber Security (with HCLTech)", priceVal: 183080, career: "Cyber Security Specialist" },
+                        { name: "Software Engineering (with HCLTech)", priceVal: 183080, career: "Software Engineer" },
+                        { name: "Blockchain Technology & Management", priceVal: 183080, career: "Blockchain Architect" }
                     ].map(s => ({
-                        name: s.name, price: formatMoney(s.priceVal) + " (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "Highest tier MCA architecture tailored expressly for " + s.name + ".",
-                            s.name.includes("TECH") || s.name.includes("ION") ? "Massive elite partnership strictly integrated via " + s.name.split('(')[1].replace(')','') + "." : "Utilizes extensive simulated testing bounds targeting absolute software dominance.",
-                            "Profile building via Master Classes (Resume + Tech Interview targeting).",
-                            "Incredible scholarship depth: Up to 20% for Alumnis/Defence natively processed.",
-                            "Easily accessible Fibe/Grayquest mapping ensuring simple zero-stress academic liquidity."
-                        ],
-                        duration: "24 Months", eligibility: "Graduation (Ideally BCA/B.Sc/B.Com utilizing Mathematics base).", paymentDetails: generateTable(s.priceVal, 24)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: "Absolute core computing architecture smoothly mapping specialized logic naturally.",
+                        usps: ["Explicit partnerships integrating TCS iON, HCLTech, and Paytm securely.", "Structured upfront lump-sum scaling discount inherently applied.", "EMI naturally handled at ₹7,877/month."],
+                        duration: "24 Months", eligibility: "Graduation heavily tracking Mathematics via 10+2/Degree accurately.",
+                        paymentDetails: generateTable(s.priceVal, 94530, 49800, 24),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "UG", name: "BBA", duration: "36 Months", priceRange: "₹1,65,000 - ₹2,25,000",
+                    group: "PG", name: "MCom", duration: "24 Months", priceRange: "₹1,32,000 (Lumpsum) / ₹35,625 (Sem)",
                     specializations: [
-                        { name: "General", priceVal: 165000, career: "Business Trainee, Account Manager", desc: "Microeconomics overview, Accounting Basics, Operations introductory loops." },
-                        { name: "Travel and tourism management", priceVal: 165000, career: "Tour Analyst, Travel Agency Admin", desc: "Hospitality intro logic, Geographic tourism strategies, Event operational mapping." },
-                        { name: "Data Analytics (HCL Tech)", priceVal: 225000, career: "Junior Data Biz Analyst, Ops Analyst", desc: "HCL Tech introductory data pipelines, Basic Tableau mapping, Enterprise data theory." }
+                        { name: "Financial Management", priceVal: 132000, career: "Finance Manager", desc: "Rigorous commerce setups explicitly mapping financial strategy efficiently." },
+                        { name: "Fintech", priceVal: 132000, career: "Fintech Lead", desc: "Modern commerce setups explicitly mapping financial technology effectively." }
                     ].map(s => ({
-                        name: s.name, price: formatMoney(s.priceVal) + " (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "Industry-synced BBA designed around heavy " + s.name + " mechanics.",
-                            "Direct Amity Noida physical textbook capabilities supporting rigorous study flows.",
-                            "Placement scaling natively operating from Sem 1.",
-                            "Fully verified by global structures (WASC, WES).",
-                            "Continuous 30:70 grading pattern significantly lowering stress metrics."
-                        ],
-                        duration: "36 Months", eligibility: "10+2 from a recognized board via any stream.", paymentDetails: generateTable(s.priceVal, 36)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: s.desc,
+                        usps: ["Intensive accounting frameworks accurately establishing premium corporate structures.", "Full payment explicit discount directly processed.", "Seamless EMI pipelines natively active at ₹5,938/month."],
+                        duration: "24 Months", eligibility: "Bachelor's degree smoothly validated.",
+                        paymentDetails: generateTable(s.priceVal, 68250, 35625, 24),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "UG", name: "BCA", duration: "36 Months", priceRange: "₹1,50,000 - ₹2,50,000",
+                    group: "PG", name: "MA (Journalism & Mass Comm)", duration: "24 Months", priceRange: "₹1,67,200 (Lumpsum) / ₹45,000 (Sem)",
                     specializations: [
-                        { name: "General", priceVal: 150000, career: "Junior Dev, Database Admin", desc: "Core C/C++, Java Intro, Database Logic mapped cleanly." },
-                        { name: "Data Analytics - TCS ION", priceVal: 225000, career: "TCS Junior Analyst, DB Modeler", desc: "Direct TCS Enterprise data methodologies explicitly placed natively at UG level." },
-                        { name: "Cloud & Security - TCS ION", priceVal: 225000, career: "TCS Cloud Trainee, Network Junior", desc: "Server scaling, Basics of AWS/Azure architectures driven specifically by TCS metrics." },
-                        { name: "Software Engineering - HCL Tech", priceVal: 225000, career: "HCL Dev Trainee, Code Validator", desc: "HCL oriented microservices pipelines, Enterprise clean code standards." },
-                        { name: "Data Engineering - HCL Tech", priceVal: 225000, career: "HCL Data Architect Junior, ETL Maker", desc: "Data warehouses natively explored, ETL baseline pipelines." },
-                        { name: "Financial Technology and AI - Paytm", priceVal: 250000, career: "Paytm Junior Analyst, Code Logic Admin", desc: "Fintech APIs natively constructed with deep oversight from Paytm partners." }
+                        { name: "General", priceVal: 167200, career: "Media Manager, Editor", desc: "Advanced media narratives securely tracked entirely matching premium industry requirements." }
                     ].map(s => ({
-                        name: s.name, price: formatMoney(s.priceVal) + " (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "Comprehensive robust BCA tailored exactly into " + s.name + ".",
-                            s.name.includes("-") ? "Explosive structural integration mapped heavily via " + s.name.split('-')[1].trim() + " loops." : "Core Amity Alumni network ensures massive scaling possibilities.",
-                            "Includes access to virtual software networking job fairs locally natively.",
-                            "Supported highly by 6 extra bundled courses from Amity internally.",
-                            "Easily deployable via Grayquest or Fibe to map absolute financial ease."
-                        ],
-                        duration: "36 Months", eligibility: "10+2 from a recognized board.", paymentDetails: generateTable(s.priceVal, 36)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: s.desc,
+                        usps: ["Extensive media focuses completely targeting modern publishing networks.", "Full payment discount explicitly deployed inherently.", "Seamless EMI pipelines smoothly active at ₹7,521/month."],
+                        duration: "24 Months", eligibility: "Graduation carefully verified.",
+                        paymentDetails: generateTable(s.priceVal, 86320, 45000, 24),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "UG", name: "BA", duration: "36 Months", priceRange: "₹85,000 - ₹1,70,000",
+                    group: "UG", name: "BBA", duration: "36 Months", priceRange: "₹1,75,120 (Lumpsum) / ₹33,200 (Sem)",
                     specializations: [
-                        { name: "General (Select Any Specialization)", priceVal: 99000, career: "Content Writer, Civil Services Aspirant, Public Analyst", desc: "Select massively from core electives exactly covering Sociology, Political Science, Economics, and English Literature." },
-                        { name: "Vernacular", priceVal: 85000, career: "Regional Editor, Content Manager", desc: "Delivered strictly utilizing regional Indian languages for absolute outreach." },
-                        { name: "JMC", priceVal: 170000, career: "Journalist, Media Admin", desc: "Broadcast mechanics, Digital radio architectures, Mass editing grids." }
+                        { name: "Data Analytics (with HCLTech)", priceVal: 175120, career: "Data Analyst" },
+                        { name: "Travel and Tourism Management", priceVal: 175120, career: "Tourism Executive" },
+                        { name: "Digital Marketing", priceVal: 175120, career: "Digital Marketer" }
                     ].map(s => ({
-                        name: s.name, price: formatMoney(s.priceVal) + " (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "NAAC A+ arts scale mapping perfectly via " + s.name + ".",
-                            "Offers immediate WES integration unlocking massive global Master pathways.",
-                            "Inbuilt profile building Masterclasses immediately unlocking top media/content tier jobs.",
-                            "Unbeatable scholarship metrics: 20% automatic for Alumnis, Divyaang, and Defence nodes.",
-                            "Easily accessible 70:30 proctored grading structures."
-                        ],
-                        duration: "36 Months", eligibility: "10+2 from a recognized board via any stream.", paymentDetails: generateTable(s.priceVal, 36)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: "Massive foundation blocks directly establishing premium corporate trajectories naturally.",
+                        usps: ["Direct HCLTech alliance flawlessly tracking industry setups.", "Built-in explicit lumpsum payment discount entirely verified.", "No Cost EMI reliably handled at ₹7,877/month."],
+                        duration: "36 Months", eligibility: "10+2 gracefully verified from recognized boards.",
+                        paymentDetails: generateTable(s.priceVal, 63020, 33200, 36),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "UG", name: "B. Com", duration: "36 Months", priceRange: "₹99,000 - ₹2,50,000",
+                    group: "UG", name: "BCA", duration: "36 Months", priceRange: "₹1,54,000 (Lumpsum) / ₹29,200 (Sem)",
                     specializations: [
-                        { name: "General", priceVal: 99000, career: "Accounts Trainee, Operations Backoffice", desc: "Financial ledger tracking, Basics of microeconomics, Business legal grids." },
-                        { name: "ACCA (Association of Chartered Certified Accountants)", priceVal: 250000, career: "Financial Analyst, Trade Finance Coordinator, CFO International", desc: "Performance Management, Strategic Business Leadership, Audit & Assurance, International Financial Reporting. Certified globally and accredited strictly by ACCA, UK." }
+                        { name: "Fintech & AI (with Paytm)", priceVal: 154000, career: "Fintech Executive" },
+                        { name: "Data Engineering (with HCLTech)", priceVal: 154000, career: "Data Engineer" },
+                        { name: "Software Engineering (with HCLTech)", priceVal: 154000, career: "Software Engineer" },
+                        { name: "Data Analytics", priceVal: 154000, career: "Data Analyst" },
+                        { name: "Cloud & Security", priceVal: 154000, career: "Cloud Support" },
+                        { name: "Data Science", priceVal: 154000, career: "Data Scientist" }
                     ].map(s => ({
-                        name: s.name, price: formatMoney(s.priceVal) + " (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            s.name.includes("ACCA") ? "Gain 9 ACCA paper exemptions out-of-the-box via strict ACCA, UK accreditation." : "Deep general financial foundation via Amity's legacy networks.",
-                            "Strict financial corporate pathway deeply engaging via " + s.name + ".",
-                            "Massive career mapping handled explicitly via Amity's Industrial Mentors.",
-                            "Excellent 24/36 month zero-cost EMI structure mapped neatly via TCPL & Fibe.",
-                            "Eligible for huge 20% flat offsets (Alumni/Defence) and 30-100% Sports CHAMPS coverage."
-                        ],
-                        duration: "36 Months", eligibility: "10+2 from a recognized board via any stream.", paymentDetails: generateTable(s.priceVal, 36)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: "Solid computational frameworks heavily targeting distinct modern computing logic directly.",
+                        usps: ["Absolute exclusive corporate alignments natively (Paytm, HCLTech).", "Upfront payment discount flawlessly scaling perfectly.", "Advanced WES recognized tier strictly active."],
+                        duration: "36 Months", eligibility: "10+2 accurately verified.",
+                        paymentDetails: generateTable(s.priceVal, 55420, 29200, 36),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "PG", name: "MA", duration: "24 Months", priceRange: "₹1,30,000 - ₹1,70,000",
+                    group: "UG", name: "B.Com", duration: "36 Months", priceRange: "₹1,06,000 (Lumpsum) / ₹20,000 (Sem)",
                     specializations: [
-                        { name: "JMC", priceVal: 170000, career: "Media Director, Broadcast Scale Manager", desc: "Journalism ethics deeply tracked, Visual broadcast media management." },
-                        { name: "Public Policy Governance", priceVal: 130000, career: "Policy Analyst, NGO Director", desc: "Urban policy matrices, NGO developmental scaling loops." }
+                        { name: "International Finance & Accounting", priceVal: 106000, career: "Accountant, Finance Manager", desc: "Core commerce structures completely enhanced natively via ACCA." }
                     ].map(s => ({
-                        name: s.name, price: formatMoney(s.priceVal) + " (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "Deep WASC & UK Quality Assured architecture built natively for " + s.name + ".",
-                            "Connect intimately using the elite Amity Alumni network globally.",
-                            "Massive merit tracking 20% scholarships ensuring heavy educational deployment.",
-                            "Tackles full 70:30 assessments allowing heavy practical career deployment.",
-                            "Trained simultaneously via 6 additional mapped free online programs."
-                        ],
-                        duration: "24 Months", eligibility: "Graduation from a recognized board.", paymentDetails: generateTable(s.priceVal, 24)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: s.desc,
+                        usps: ["Direct ACCA alignment heavily providing up to 60% exemptions natively.", "Bloomberg Professional integration inherently mapped.", "EMI structurally mapped gracefully down to ₹4,773/month."],
+                        duration: "36 Months", eligibility: "10+2 efficiently established.",
+                        paymentDetails: generateTable(s.priceVal, 38150, 20000, 36),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "PG", name: "MCOM", duration: "24 Months", priceRange: "₹1,20,000",
+                    group: "UG", name: "BA", duration: "36 Months", priceRange: "₹81,180 (Lumpsum) / ₹15,000 (Sem)",
                     specializations: [
-                        { name: "Fintech", priceVal: 120000, career: "Fintech Product Manager, Tech Auditor", desc: "Cryptographic integration in banking, Advanced blockchain banking integrations." },
-                        { name: "Financial Management", priceVal: 120000, career: "Chief Financial Officer Trainee, Senior Auditor", desc: "Derivatives advanced structures, Global forex M&A architectures." }
+                        { name: "Sociology", priceVal: 81180, career: "HR Executive" },
+                        { name: "Political Science", priceVal: 81180, career: "Policy Analyst" },
+                        { name: "English", priceVal: 81180, career: "Content Writer" },
+                        { name: "Economics", priceVal: 81180, career: "Economist" }
                     ].map(s => ({
-                        name: s.name, price: formatMoney(s.priceVal) + " (Total)", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "Rigorous accounting pathways specializing strictly into " + s.name + ".",
-                            "Offers immediate virtual placement scales explicitly managed via Amity's backend.",
-                            "Fully transparent cost structuring supported efficiently by Fibe & Grayquest EMIs.",
-                            "Master corporate compliance grids thoroughly utilizing simulation tracking.",
-                            "Zero friction assessments utilizing the 70% Proctored / 30% Continual testing format."
-                        ],
-                        duration: "24 Months", eligibility: "B.Com / BBA from recognized board.", paymentDetails: generateTable(s.priceVal, 24)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: "Broad societal architectures deeply mapping essential liberal arts safely.",
+                        usps: ["Premium NAAC A+ humanities degree scaling civil services correctly.", "Massive affordability effectively logging ₹4,552/month EMI.", "Lumpsum structural discount cleanly active."],
+                        duration: "36 Months", eligibility: "10+2 efficiently established.",
+                        paymentDetails: generateTable(s.priceVal, 28600, 15000, 36),
+                        brochure: null
                     }))
                 },
                 {
-                    group: "Integrated", name: "Integrated Program", duration: "48 - 60 Months", priceRange: "Contact Admissions",
+                    group: "UG", name: "BA (Journalism & Mass Comm)", duration: "36 Months", priceRange: "₹1,67,200 (Lumpsum) / ₹31,700 (Sem)",
                     specializations: [
-                        { name: "BCom + MBA", career: "Corporate Director, Lead Financial Strat", desc: "Transitions directly from foundational accounting metrics cleanly into advanced corporate MBA leadership loops seamlessly." },
-                        { name: "BBA + MBA", career: "Business Head, Org Developer", desc: "The ultimate track connecting broad operation structures directly to highly concentrated MBA data strategies." },
-                        { name: "BCA + MCA", career: "Lead System Architect, DevOps VP", desc: "Starts explicitly at software foundations natively locking all the way directly into Cloud server matrix logic." }
+                        { name: "General", priceVal: 167200, career: "Media Executive", desc: "Core media structures completely mapping digital transitions." }
                     ].map(s => ({
-                        name: s.name, price: "Contact Admission", careerPath: s.career, syllabus: s.desc,
-                        usps: [
-                            "Incredibly elite dual sequence merging UG directly logically into PG under " + s.name + ".",
-                            "Completely removes the severe friction of securing master's level admission testing entirely.",
-                            "WASC and WES mapped strictly maximizing total international transfer validity.",
-                            "Benefit incredibly from deep Amity Incubator integration stretching years long.",
-                            "Discounts via Sports CHAMPS reaching potentially 100% full coverage natively.",
-                            "Includes enormous simulated career tracking operating seamlessly."
-                        ],
-                        duration: "4 Years (to 5 Years)", eligibility: "10+2 from recognized board. Valid base for specific discipline required.", paymentDetails: generateTable("Contact Admission for Integrated Pricing", 60)
+                        name: s.name, price: formatMoney(s.priceVal), careerPath: s.career, syllabus: s.desc,
+                        usps: ["Direct media house alignments fully validated.", "Lumpsum explicit discount natively supported.", "EMI smoothly tracked gracefully to ₹7,521/month."],
+                        duration: "36 Months", eligibility: "10+2 efficiently established.",
+                        paymentDetails: generateTable(s.priceVal, 60170, 31700, 36),
+                        brochure: null
                     }))
                 }
             ]
@@ -304,15 +247,15 @@ async function run() {
         url: "https://amityonline.com/"
     };
 
-    if (amityIdx > -1) {
-        universities[amityIdx] = amityData;
-    } else {
-        universities.push(amityData);
+    if (targetIdx > -1) {
+        universities.splice(targetIdx, 1);
     }
+    
+    universities.push(amityData);
 
-    const newStr = `export const universities = ${JSON.stringify(universities, null, 2)};\n`;
+    const newStr = 'export const universities = ' + JSON.stringify(universities, null, 2) + ';\n';
     fs.writeFileSync('./src/data/universities.js', newStr, 'utf8');
-    console.log("Amity University precisely curated with exact syllabus formats, USPs, and strict exam | notation.");
+    console.log("Amity Online data natively mapped structurally directly into the repository perfectly with high-density no-glow UI!");
 }
 
 run().catch(console.error);
