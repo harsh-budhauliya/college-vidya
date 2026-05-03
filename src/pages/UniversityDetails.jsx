@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CheckCircle2, Banknote, MapPin, Search, GraduationCap, TrendingUp, BookOpen, AlertCircle, Info, CheckCircle, Navigation, ShieldCheck, Trophy } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, Banknote, MapPin, Search, GraduationCap, TrendingUp, BookOpen, AlertCircle, Info, CheckCircle, Navigation, ShieldCheck, Trophy, Eye, Download } from 'lucide-react';
 import { universities } from '../data/universities';
 
 const UniversityDetails = () => {
@@ -49,40 +49,47 @@ const UniversityDetails = () => {
                </div>
            </div>
 
-           {/* Grand Header - Deep & Structured but not overly aggressive */}
-           <div className="bg-[#0b132b] text-white overflow-hidden relative">
-               <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#0047ad]/20 rounded-full blur-[120px] pointer-events-none -mt-64 -mr-64"></div>
-               
-               <div className="max-w-[1400px] mx-auto px-4 lg:px-6 lg:px-12 pt-10 pb-12 lg:pt-16 lg:pb-20 flex flex-wrap gap-6 lg:gap-10 justify-between items-start xl:items-end relative z-10 border-b-4 border-[#ff6b00]">
-                  
-                  {/* Left: Titles with normal casing. Flex-1 allows taking space up to a point, then wrapping. */}
-                  <div className="flex-[1_1_500px] max-w-full">
-                      <div className="flex flex-wrap items-center gap-3 mb-5">
-                         <span className="bg-white/10 text-emerald-400 text-xs font-black px-3 py-1.5 rounded flex items-center gap-1.5 uppercase tracking-widest"><ShieldCheck size={14}/> Data Verified</span>
-                         <span className="bg-[#0047ad] text-white text-xs font-black px-3 py-1.5 rounded uppercase tracking-widest">{uni.type}</span>
-                         <span className="text-slate-300 text-xs font-bold uppercase tracking-widest flex items-center gap-1"><MapPin size={14}/> {uni.location}</span>
-                      </div>
-                      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-5 break-words sm:break-normal">{uni.name}</h1>
-                      <div className="flex flex-wrap items-center gap-3 text-slate-300 text-[11px] sm:text-sm font-bold uppercase tracking-widest">
-                         {uni.accreditation.split(',').map((acc, idx) => (
-                             <span key={idx} className="bg-white/5 px-2.5 sm:px-3 py-1.5 rounded border border-white/10 whitespace-nowrap">{acc.trim()}</span>
-                         ))}
-                      </div>
+           {/* Grand Header - Advanced Education Portal Style (No Glow) */}
+           <div className="bg-[#0f172a] text-white border-b border-slate-800">
+               <div className="max-w-[1400px] mx-auto px-4 lg:px-6 lg:px-12 py-8 lg:py-12">
+                  {/* Breadcrumb / Top Meta */}
+                  <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-8">
+                     <span>Directory</span>
+                     <span className="text-slate-600">/</span>
+                     <span>{uni.type}</span>
+                     <span className="text-slate-600">/</span>
+                     <span className="text-slate-300">{uni.name}</span>
                   </div>
 
-                  {/* Right: Sharp Data Widgets - Now fully fluid, wrapping smoothly. */}
-                  <div className="flex flex-wrap gap-3 md:gap-4 flex-[1_1_auto] w-full xl:w-auto mt-6 xl:mt-0 justify-start xl:justify-end">
-                      <div className="bg-white/5 border border-white/10 p-4 sm:p-5 rounded-xl backdrop-blur-sm flex flex-col justify-center flex-1 min-w-[220px] max-w-full">
-                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 block">Est. Tuition Band</span>
-                         <span className="text-lg sm:text-xl md:text-2xl font-black text-emerald-400 block tracking-tight leading-tight">{uni.fees}</span>
+                  <div className="flex flex-col xl:flex-row gap-10 xl:gap-16 justify-between items-start">
+                      <div className="flex-[1_1_auto] max-w-4xl">
+                          <div className="flex flex-wrap items-center gap-3 mb-6">
+                             <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-black px-3 py-1.5 rounded-md flex items-center gap-1.5 uppercase tracking-widest shadow-sm"><ShieldCheck size={14}/> Verified Profile</span>
+                             <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-widest shadow-sm">{uni.type}</span>
+                             <span className="text-slate-400 border border-slate-700 bg-slate-800/50 text-xs font-bold px-3 py-1.5 rounded-md uppercase tracking-widest flex items-center gap-1.5 shadow-sm"><MapPin size={14}/> {uni.location}</span>
+                          </div>
+                          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] tracking-tight mb-6">{uni.name}</h1>
+                          <div className="flex flex-wrap items-center gap-2 text-[11px] sm:text-[12px] font-bold uppercase tracking-widest">
+                             {uni.accreditation.split(',').map((acc, idx) => (
+                                 <span key={idx} className="text-slate-300 bg-slate-800/80 px-3 py-2 rounded-md border border-slate-700 shadow-sm">{acc.trim()}</span>
+                             ))}
+                          </div>
                       </div>
-                      <div className="bg-white/5 border border-white/10 p-4 sm:p-5 rounded-xl backdrop-blur-sm flex flex-col justify-center flex-1 min-w-[220px] max-w-full">
-                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 block">Placement & Support</span>
-                         <span className="text-[15px] sm:text-base md:text-lg font-bold text-white block tracking-tight leading-snug">{uni.placement}</span>
-                      </div>
-                      <div className="bg-[#0047ad]/20 border border-[#0047ad]/40 p-4 sm:p-5 rounded-xl backdrop-blur-sm flex flex-col justify-center flex-1 min-w-[220px] max-w-full">
-                         <span className="text-[10px] text-[#8cb4ff] font-bold uppercase tracking-widest mb-1 block">Global Rank</span>
-                         <span className="text-[15px] sm:text-base md:text-lg font-bold text-white block tracking-tight leading-snug">{uni.ranking}</span>
+
+                      {/* Quick Stats Grid - Data Dense */}
+                      <div className="w-full xl:w-[480px] shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="bg-slate-800/50 border border-slate-700 p-5 rounded-xl flex flex-col justify-center">
+                             <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><Banknote size={14} className="text-emerald-400"/> Est. Tuition Band</span>
+                             <span className="text-xl md:text-2xl font-black text-white tracking-tight">{uni.fees}</span>
+                          </div>
+                          <div className="bg-slate-800/50 border border-slate-700 p-5 rounded-xl flex flex-col justify-center">
+                             <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><TrendingUp size={14} className="text-blue-400"/> Placement & Support</span>
+                             <span className="text-base md:text-lg font-bold text-white leading-snug">{uni.placement}</span>
+                          </div>
+                          <div className="sm:col-span-2 bg-blue-600/10 border border-blue-500/20 p-5 rounded-xl flex flex-col justify-center">
+                             <span className="text-[10px] text-blue-300 font-black uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><Trophy size={14} className="text-blue-400"/> Global Recognition Rank</span>
+                             <span className="text-base md:text-lg font-bold text-blue-50 leading-snug">{uni.ranking}</span>
+                          </div>
                       </div>
                   </div>
                </div>
@@ -122,61 +129,66 @@ const UniversityDetails = () => {
                                        )}
                                     </div>
 
-                                    <div className="flex flex-col gap-6 sm:p-5 md:p-8 mt-2">
-                                       {/* Level 2: List of Programs */}
-                                       <div className="w-full flex flex-col gap-4">
-                                          {uni.extendedDetails.programs.filter(p => p.group === selectedGroup).map((prog, i) => {
-                                             const isProgSelected = selectedProgram?.name === prog.name;
-                                             return (
-                                                <div key={i} className={`border rounded-xl transition-all overflow-hidden ${isProgSelected ? 'border-[#ff6b00] ring-1 ring-[#ff6b00]/20' : 'border-slate-200'}`}>
-                                                   {/* Program Row */}
-                                                   <button 
-                                                      onClick={() => {
-                                                         setSelectedProgram(isProgSelected ? null : prog);
-                                                         
-                                                      }}
-                                                      className={`w-full text-left p-4 sm:p-5 flex justify-between items-center transition-colors ${isProgSelected ? 'bg-[#fff7ed]' : 'bg-white hover:bg-slate-50'}`}
-                                                   >
-                                                      <div>
-                                                         <span className="text-[10px] font-black uppercase tracking-widest text-[#0047ad] block mb-1">{prog.duration}</span>
-                                                         <span className={`text-xl font-black ${isProgSelected ? 'text-slate-900' : 'text-slate-700'}`}>{prog.name}</span>
-                                                      </div>
-                                                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-transform ${isProgSelected ? 'bg-[#ff6b00] text-white shadow-md rotate-90' : 'bg-slate-100 text-slate-400 rotate-180'}`}>
-                                                         <ArrowLeft size={16} />
-                                                      </div>
-                                                   </button>
+                                    <div className="flex flex-col lg:flex-row gap-6 p-4 sm:p-5 md:p-8 mt-2">
+                                        {/* Level 2: List of Programs */}
+                                        <div className="w-full lg:w-[350px] xl:w-[400px] shrink-0 flex flex-col gap-3">
+                                           {uni.extendedDetails.programs.filter(p => p.group === selectedGroup).map((prog, i) => {
+                                              const isProgSelected = selectedProgram?.name === prog.name;
+                                              return (
+                                                 <div key={i} className={`border transition-all overflow-hidden ${isProgSelected ? 'border-slate-800 rounded-xl shadow-md bg-slate-900' : 'border-slate-200 rounded-lg hover:border-slate-300 shadow-sm bg-white'}`}>
+                                                    {/* Program Row */}
+                                                    <button 
+                                                       onClick={() => {
+                                                          setSelectedProgram(isProgSelected ? null : prog);
+                                                       }}
+                                                       className={`w-full text-left px-4 sm:px-5 py-4 flex justify-between items-center transition-colors ${isProgSelected ? 'bg-slate-900' : 'bg-white hover:bg-slate-50'}`}
+                                                    >
+                                                       <div className="flex items-center gap-3 sm:gap-4 pr-2">
+                                                          <div className={`flex w-10 h-10 rounded-md items-center justify-center shrink-0 border ${isProgSelected ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
+                                                              <BookOpen size={18} className={isProgSelected ? 'text-[#3b82f6]' : 'text-slate-400'} />
+                                                          </div>
+                                                          <div className="flex flex-col">
+                                                             <span className={`text-[10px] font-black uppercase tracking-widest block mb-1 ${isProgSelected ? 'text-[#3b82f6]' : 'text-slate-500'}`}>{prog.duration} • {prog.specializations?.length || 0} Options</span>
+                                                             <span className={`text-[15px] sm:text-[17px] font-black leading-tight ${isProgSelected ? 'text-white' : 'text-slate-900'}`}>{prog.name}</span>
+                                                          </div>
+                                                       </div>
+                                                       <div className={`w-8 h-8 shrink-0 rounded-md flex items-center justify-center transition-transform ${isProgSelected ? 'bg-slate-800 text-white shadow-sm rotate-90 border border-slate-700' : 'bg-white text-slate-400 border border-slate-200'}`}>
+                                                          <ArrowRight size={16} className={isProgSelected ? "rotate-90" : ""} />
+                                                       </div>
+                                                    </button>
 
-                                                   {/* Level 3: Specializations Expanded Grid */}
-                                                   {isProgSelected && prog.specializations && (
-                                                      <div className="p-4 sm:p-5 md:p-6 bg-slate-50 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 lg:gap-4">
-                                                         {prog.specializations.map((spec, j) => {
-                                                             const isSpecSelected = false;
-                                                             return (
-                                                                <button 
-                                                                   key={j}
-                                                                   onClick={() => navigate(`/university-data/university/${uniId}/program/${encodeURIComponent(prog.name)}/specialization/${encodeURIComponent(spec.name)}`)}
-                                                                   className={`text-left px-4 py-3 rounded-lg border transition-all flex flex-col gap-1 items-start ${isSpecSelected ? 'bg-slate-900 border-slate-900 shadow-lg' : 'bg-white border-slate-200 hover:border-[#0047ad] shadow-sm group'}`}
-                                                                >
-                                                                   <span className={`text-[13px] font-bold ${isSpecSelected ? 'text-white' : 'text-slate-700 group-hover:text-[#0047ad]'}`}>
-                                                                       {spec.name}
-                                                                   </span>
-                                                                   {(spec.price || prog.priceRange) && (
-                                                                       <span className={`text-[10px] font-black uppercase tracking-widest mt-1 ${isSpecSelected ? 'text-slate-300' : 'text-emerald-600 group-hover:text-[#ff6b00]'}`}>
-                                                                           {spec.price || prog.priceRange}
-                                                                       </span>
-                                                                   )}
-                                                                </button>
-                                                             );
-                                                         })}
-                                                      </div>
-                                                   )}
-                                                </div>
-                                             )
-                                          })}
-                                       </div>
+                                                    {/* Level 3: Specializations Expanded Grid */}
+                                                    {isProgSelected && prog.specializations && (
+                                                       <div className="p-3 sm:p-4 bg-slate-50 border-t border-slate-700 flex flex-col gap-2">
+                                                          {prog.specializations.map((spec, j) => {
+                                                              return (
+                                                                 <button 
+                                                                    key={j}
+                                                                    onClick={() => navigate(`/university-data/university/${uniId}/program/${encodeURIComponent(prog.name)}/specialization/${encodeURIComponent(spec.name)}`)}
+                                                                    className="w-full text-left px-4 py-3.5 rounded-lg border border-slate-200 bg-white shadow-sm hover:border-[#0047ad] hover:shadow-md transition-all group flex items-center justify-between gap-3"
+                                                                 >
+                                                                    <span className="text-[13px] sm:text-[14px] font-bold text-slate-800 group-hover:text-[#0047ad] line-clamp-2 pr-2 flex-1">
+                                                                        {spec.name}
+                                                                    </span>
+                                                                    <div className="flex items-center gap-3 shrink-0">
+                                                                        {(spec.price || prog.priceRange) && (
+                                                                            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 px-2 py-1 rounded-md whitespace-nowrap">
+                                                                                {spec.price || prog.priceRange}
+                                                                            </span>
+                                                                        )}
+                                                                        <ArrowRight size={14} className="text-slate-300 group-hover:text-[#0047ad] transition-colors hidden sm:block" />
+                                                                    </div>
+                                                                 </button>
+                                                              );
+                                                          })}
+                                                       </div>
+                                                    )}
+                                                 </div>
+                                              )
+                                           })}
+                                        </div>
 
-                                       
-                                           <div className="w-full mt-2 lg:mt-6">
+                                        <div className="w-full flex-1">
                                            {selectedProgram ? (
                                              <div className="h-full min-h-[300px] border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 p-4 sm:p-5 md:p-8 flex flex-col items-center justify-center text-center">
                                                 <TrendingUp size={32} className="text-slate-300 mb-4" />
@@ -230,43 +242,55 @@ const UniversityDetails = () => {
                             )}
 
                             {/* Financial Operations Box */}
-                            <div className="bg-white rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.04)] p-4 sm:p-5 md:p-8 border-t-[4px] border-t-[#ff6b00]">
-                                <h3 className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-6">
-                                   <Banknote className="text-[#ff6b00]" size={18}/> Financial Ledger
+                            <div className="bg-white rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] p-5 md:p-8 border border-slate-200 flex flex-col relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+                                <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] flex items-center gap-2 mb-6">
+                                   <Banknote className="text-emerald-500" size={16}/> Financial Ledger
                                 </h3>
-                                <div className="flex flex-col gap-3">
-                                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 payment-html-wrapper" dangerouslySetInnerHTML={{__html: uni.extendedDetails.payment}}></div>
+                                <div className="flex flex-col gap-3 h-full">
+                                   <div className="bg-slate-50/80 p-5 rounded-xl border border-slate-200 payment-html-wrapper text-sm font-medium text-slate-700 h-full" dangerouslySetInnerHTML={{__html: uni.extendedDetails.payment}}></div>
                                    <style dangerouslySetInnerHTML={{__html: `
-                                       .payment-html-wrapper b { color: #1e293b; display: inline-block; font-weight: 800; font-size: 14px; margin-bottom: 4px; }
-                                       .payment-html-wrapper br { margin-bottom: 8px; content: ""; display: block; }
+                                       .payment-html-wrapper b { color: #0f172a; display: inline-block; font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+                                       .payment-html-wrapper br { margin-bottom: 10px; content: ""; display: block; }
                                    `}} />
                                 </div>
                             </div>
 
                             {/* Exam Protocols Box */}
-                            <div className="bg-white rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.04)] p-4 sm:p-5 md:p-8 border-t-[4px] border-t-purple-500 flex flex-col">
-                                <h3 className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-6">
-                                   <CheckCircle className="text-purple-600" size={18}/> Exam Protocols
+                            <div className="bg-white rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] p-5 md:p-8 border border-slate-200 flex flex-col relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+                                <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] flex items-center gap-2 mb-6">
+                                   <CheckCircle className="text-blue-500" size={16}/> Exam Protocols
                                 </h3>
                                 
-                                <div className="flex flex-col gap-4 mt-2">
+                                <div className="flex flex-col gap-4 mt-auto">
                                     {/* Assessment Card */}
-                                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-6 rounded-xl border border-slate-200">
-                                        <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 flex items-center gap-1.5 focus:outline-none">
-                                            <Trophy size={14} className="text-slate-500" /> ASSESSMENT SPLIT
+                                    <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 flex items-start gap-4">
+                                        <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm shrink-0">
+                                            <Trophy size={20} className="text-blue-500" />
                                         </div>
-                                        <div className="text-slate-800 font-black text-lg leading-snug">
-                                            {uni.extendedDetails.examination.split('|')[0]}
+                                        <div>
+                                            <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                                ASSESSMENT SPLIT
+                                            </div>
+                                            <div className="text-slate-800 font-bold text-sm leading-relaxed">
+                                                {uni.extendedDetails.examination.split('|')[0]}
+                                            </div>
                                         </div>
                                     </div>
                                     
                                     {/* Passing Criteria Card */}
-                                    <div className="bg-purple-50 p-4 md:p-6 rounded-xl border border-purple-100">
-                                        <div className="text-[10px] font-black uppercase text-purple-400 tracking-widest mb-3 flex items-center gap-1.5 focus:outline-none">
-                                            <ShieldCheck size={14} className="text-purple-500" /> PASSING CRITERIA
+                                    <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 flex items-start gap-4">
+                                        <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm shrink-0">
+                                            <ShieldCheck size={20} className="text-emerald-500" />
                                         </div>
-                                        <div className="inline-block bg-white text-purple-700 font-black px-4 py-2 rounded-lg shadow-sm border border-purple-100">
-                                            {uni.extendedDetails.examination.split('|')[1]}
+                                        <div>
+                                            <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                                PASSING CRITERIA
+                                            </div>
+                                            <div className="text-slate-800 font-bold text-sm leading-relaxed">
+                                                {uni.extendedDetails.examination.split('|')[1] || uni.extendedDetails.examination.split('.')[1] + '.'}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -276,27 +300,47 @@ const UniversityDetails = () => {
                       )}
                   </div>
 
-                  {/* RIGHT COLUMN: Action Pane - Cleaned up to feel more spacious */}
+                  {/* RIGHT COLUMN: Action Pane - Strict Analytics Style */}
                   <div className="w-full">
-                      <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-4 sm:p-5 md:p-8 sticky top-[100px]">
-                          <h3 className="text-xl font-black text-slate-900 mb-4">Executive Terminal</h3>
+                      <div className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 sticky top-[100px] shadow-sm">
+                          <div className="flex items-center justify-between mb-4">
+                              <h3 className="text-lg font-black text-slate-900 tracking-tight">Executive Action</h3>
+                              <span className="flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                              </span>
+                          </div>
                           
-                          <p className="text-slate-500 text-[14px] font-medium leading-relaxed mb-5 md:mb-8">Pipeline ready for {uni.name}. Verify student credentials before dispatching the standard pitch sequence.</p>
+                          <p className="text-slate-500 text-[13px] font-medium leading-relaxed mb-6">Pipeline ready for {uni.name}. System awaiting credential validation.</p>
                           
-                          <div className="space-y-4">
-                             <button className="w-full bg-[#ff6b00] hover:bg-[#e05e00] text-white font-black text-[15px] py-4 rounded-xl transition-all shadow-md shadow-[#ff6b00]/20 hover:-translate-y-0.5">
-                                 Trigger Secure Pitch
+                          <div className="space-y-3">
+                             <button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-[14px] py-3.5 rounded-lg transition-colors border border-slate-900 flex justify-center items-center gap-2">
+                                 Trigger Secure Pitch <ArrowRight size={16}/>
                              </button>
 
-                             <button className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-[13px] py-4 rounded-xl transition-colors">
-                                 Download Prospectus
-                             </button>
+                             {uni.brochure && (
+                                 <div className="flex gap-2 mt-3">
+                                     <button 
+                                         onClick={() => window.open(uni.brochure, '_blank')}
+                                         className="flex-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-[13px] py-3.5 rounded-lg transition-colors flex justify-center items-center gap-2"
+                                     >
+                                         <Eye size={16} /> View Brochure
+                                     </button>
+                                     <a 
+                                         href={uni.brochure} 
+                                         download
+                                         className="flex-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-[13px] py-3.5 rounded-lg transition-colors flex justify-center items-center gap-2"
+                                     >
+                                         <Download size={16} /> Download
+                                     </a>
+                                 </div>
+                             )}
                           </div>
 
                           {uni.extendedDetails?.leadLocking && (
-                             <div className="mt-10 bg-[#fff5f5] border border-red-100 p-4 sm:p-5 rounded-2xl relative">
-                                <span className="text-[10px] text-red-600 font-black uppercase tracking-widest block mb-2 flex items-center gap-1.5"><AlertCircle size={14}/> Critical Directive</span>
-                                <div className="text-red-900 font-bold text-[14px] leading-snug payment-html-wrapper" dangerouslySetInnerHTML={{__html: uni.extendedDetails.leadLocking}}></div>
+                             <div className="mt-8 bg-amber-50/50 border border-amber-200/60 p-5 rounded-xl">
+                                <span className="text-[10px] text-amber-600 font-black uppercase tracking-widest block mb-3 flex items-center gap-1.5"><AlertCircle size={14}/> Critical Directive</span>
+                                <div className="text-slate-800 font-medium text-[13px] leading-relaxed payment-html-wrapper" dangerouslySetInnerHTML={{__html: uni.extendedDetails.leadLocking}}></div>
                              </div>
                           )}
                       </div>

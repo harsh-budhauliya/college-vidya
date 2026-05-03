@@ -47,15 +47,15 @@ const CounselorFlow = () => {
         
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100/50 text-primary-700 border border-primary-200 text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm">
-            <Target size={14} /> Internal Use Only
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-black uppercase tracking-widest mb-4">
+            <Target size={12} /> Internal Protocol
           </div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-            The College Buddy <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-500 to-accent-300">Consultation Framework</span>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4 uppercase">
+            Counseling <br/>
+            <span className="text-blue-600">Execution Framework</span>
           </h1>
-          <p className="text-lg text-slate-600 font-medium max-w-2xl mx-auto">
-            Turn an interrogation into an insightful conversation. Lead the student to discover their true path. Click checkboxes as you practice.
+          <p className="text-sm md:text-base text-slate-500 font-bold max-w-2xl mx-auto">
+            Execute this framework sequentially during live calls. Strict adherence required for lead conversion.
           </p>
         </div>
 
@@ -182,21 +182,20 @@ const CounselorFlow = () => {
         </div>
 
         {/* Rules */}
-        <div className="bg-slate-900 text-white rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden shrink-0">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full blur-[80px]"></div>
-            <h2 className="text-xl font-black mb-6 flex items-center gap-2 relative z-10"><AlertCircle size={20} className="text-red-500"/> Golden Rules</h2>
-            <div className="space-y-5 relative z-10">
-                <div className="flex items-start gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
-                    <CheckCircle2 className="text-emerald-400 shrink-0 mt-0.5" size={20} />
-                    <p className="text-sm font-medium text-slate-200 leading-relaxed"><b className="text-white">Never sound like a Salesman.</b> Sound like a Mentor. Connect courses to their pain points.</p>
+        <div className="bg-slate-900 text-white rounded-xl p-6 md:p-8 shadow-md relative overflow-hidden shrink-0 border border-slate-700">
+            <h2 className="text-xl font-black mb-6 flex items-center gap-2 relative z-10"><AlertCircle size={20} className="text-red-500"/> Absolute Directives</h2>
+            <div className="space-y-4 relative z-10">
+                <div className="flex items-start gap-4 bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <CheckCircle2 className="text-blue-400 shrink-0 mt-0.5" size={20} />
+                    <p className="text-[13px] font-medium text-slate-300 leading-relaxed"><b className="text-white">Zero Sales Pitch.</b> Operate exclusively as an unbiased academic mentor. Map university USPs directly to identified pain points.</p>
                 </div>
-                <div className="flex items-start gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
-                    <CheckCircle2 className="text-emerald-400 shrink-0 mt-0.5" size={20} />
-                    <p className="text-sm font-medium text-slate-200 leading-relaxed"><b className="text-white">Use the 70/30 Rule.</b> The student should speak 70% of the time, you speak 30%.</p>
+                <div className="flex items-start gap-4 bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <CheckCircle2 className="text-blue-400 shrink-0 mt-0.5" size={20} />
+                    <p className="text-[13px] font-medium text-slate-300 leading-relaxed"><b className="text-white">70/30 Ratio Enforcement.</b> The prospect must speak 70% of the time. Your 30% should be targeted questions and precise solutions.</p>
                 </div>
-                <div className="flex items-start gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
-                    <CheckCircle2 className="text-emerald-400 shrink-0 mt-0.5" size={20} />
-                    <p className="text-sm font-medium text-slate-200 leading-relaxed"><b className="text-white">If confused, refer to Phase 2.</b> A student's 'why' is the only thing that will make them pay the fees.</p>
+                <div className="flex items-start gap-4 bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <CheckCircle2 className="text-blue-400 shrink-0 mt-0.5" size={20} />
+                    <p className="text-[13px] font-medium text-slate-300 leading-relaxed"><b className="text-white">Intent Alignment.</b> If the prospect hesitates, pivot immediately back to the 'Why' discovered in Phase 2. Career outcomes drive conversions.</p>
                 </div>
             </div>
         </div>

@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Banknote, Briefcase, GraduationCap, Star, BookOpen, Clock, ShieldCheck, CheckCircle2, Navigation } from 'lucide-react';
+import { ArrowLeft, Banknote, Briefcase, GraduationCap, Star, BookOpen, Clock, ShieldCheck, CheckCircle2, Navigation, Award, Eye, Download } from 'lucide-react';
 import { universities } from '../data/universities';
 
 const SpecializationDetails = () => {
     const { uniId, programName, specName } = useParams();
     const navigate = useNavigate();
+    
+    // State for dual pricing toggle (defaults to multi-cert if available)
+    const [activeCertTrack, setActiveCertTrack] = useState('multi');
 
     const decodedProgName = decodeURIComponent(programName);
     const decodedSpecName = decodeURIComponent(specName);
@@ -22,6 +25,7 @@ const SpecializationDetails = () => {
     }
 
     const spec = prog.specializations?.find(s => s.name === decodedSpecName) || { name: decodedSpecName, details: "Specialization details currently being updated.", price: prog.fee || "As per plan", duration: prog.duration };
+    const brochureLink = spec?.brochure || prog?.brochure || uni?.brochure;
 
     return (
         <div className="min-h-screen bg-[#f4f7fa] text-slate-800 font-inter pb-24">
@@ -91,7 +95,9 @@ const SpecializationDetails = () => {
                                 </div>
                                 <div>
                                     <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 block mb-0.5">Total Investment</span>
-                                    <div className="text-[17px] font-black text-slate-800 tracking-tight">{spec.price}</div>
+                                    <div className="text-[17px] font-black text-slate-800 tracking-tight">
+                                        {spec.price1Cert ? (activeCertTrack === '1cert' ? spec.price1Cert : (spec.price3Cert || spec.price2Cert)) : spec.price}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -218,16 +224,55 @@ const SpecializationDetails = () => {
                         {/* Primary Investment Card */}
                         {(spec.paymentDetails || prog.paymentDetails || uni.extendedDetails?.payment) ? (
                             <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
-                                <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col items-center justify-center text-center">
-                                    <h5 className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Course Fee</h5>
-                                    <div className="text-[18px] md:text-xl font-black text-slate-900 tracking-tight leading-snug">{spec.price}</div>
-                                </div>
+                                
+                                {/* Dual Pricing Logic & Slashed Price */}
+                                {spec.originalPrice && spec.price1Cert && (spec.price3Cert || spec.price2Cert) ? (
+                                    <div className="bg-[#f4f7fa] border-b border-slate-200 p-1 flex flex-col">
+                                        <div className="flex w-full bg-slate-200/50 p-1 rounded-lg mb-4">
+                                            <button 
+                                                onClick={() => setActiveCertTrack('1cert')}
+                                                className={`flex-1 py-2 text-[11px] font-black uppercase tracking-widest rounded-md transition-all ${activeCertTrack === '1cert' ? 'bg-white text-[#0047ad] shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                                            >
+                                                1 Certification
+                                            </button>
+                                            <button 
+                                                onClick={() => setActiveCertTrack('multi')}
+                                                className={`flex-1 py-2 text-[11px] font-black uppercase tracking-widest rounded-md transition-all ${activeCertTrack === 'multi' ? 'bg-[#0047ad] text-white shadow-sm border border-[#00388a]' : 'text-slate-500 hover:text-slate-700'}`}
+                                            >
+                                                {spec.price3Cert ? '3 Certifications' : '2 Certifications'}
+                                            </button>
+                                        </div>
+                                        <div className="text-center pb-3">
+                                            <div className="flex items-center justify-center gap-2 mb-1">
+                                                <del className="text-slate-400 font-semibold text-sm">{spec.originalPrice}</del>
+                                                <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-black uppercase tracking-widest border border-green-200">Early Bird Discount</span>
+                                            </div>
+                                            <div className="text-2xl font-black text-slate-900 tracking-tight">
+                                                {activeCertTrack === '1cert' ? spec.price1Cert : (spec.price3Cert || spec.price2Cert)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : spec.originalPrice ? (
+                                    <div className="bg-slate-50 border-b border-slate-200 px-6 py-5 flex flex-col items-center justify-center text-center">
+                                        <h5 className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Course Fee</h5>
+                                        <div className="flex items-center justify-center gap-2 mb-1">
+                                            <del className="text-slate-400 font-semibold text-sm">{spec.originalPrice}</del>
+                                            <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-black uppercase tracking-widest border border-green-200">Discount Applied</span>
+                                        </div>
+                                        <div className="text-[18px] md:text-2xl font-black text-slate-900 tracking-tight leading-snug">{spec.price}</div>
+                                    </div>
+                                ) : (
+                                    <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col items-center justify-center text-center">
+                                        <h5 className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Course Fee</h5>
+                                        <div className="text-[18px] md:text-xl font-black text-slate-900 tracking-tight leading-snug">{spec.price}</div>
+                                    </div>
+                                )}
                                 
                                 <div className="p-6 space-y-6">
                                     <div>
                                         <strong className="text-[11px] font-black uppercase tracking-[0.15em] text-[#0047ad] block mb-3 text-center border-b border-slate-100 pb-2">Fee Ledger Details</strong>
                                         
-                                        <div className="text-slate-700 text-[14px] leading-relaxed space-y-3 payment-html-wrapper" dangerouslySetInnerHTML={{__html: spec.paymentDetails || prog.paymentDetails || uni.extendedDetails?.payment }}></div>
+                                        <div className="text-slate-700 text-[14px] leading-relaxed space-y-3 payment-html-wrapper" dangerouslySetInnerHTML={{__html: (activeCertTrack === '1cert' && spec.paymentDetails1Cert) ? spec.paymentDetails1Cert : (activeCertTrack === 'multi' ? (spec.paymentDetails3Cert || spec.paymentDetails2Cert || spec.paymentDetails) : (spec.paymentDetails || prog.paymentDetails || uni.extendedDetails?.payment)) }}></div>
                                         <style dangerouslySetInnerHTML={{__html: `
                                             .payment-html-wrapper b { color: #1e293b; display: inline-block; font-weight: 800; font-size: 13px; }
                                             .payment-html-wrapper strike { color: #94a3b8; font-size: 12px; margin-right: 6px; }
@@ -236,11 +281,32 @@ const SpecializationDetails = () => {
                                     </div>
 
                                     <div className="pt-2">
-                                        <button className="w-full bg-[#ff6b00] hover:bg-[#e05e00] text-white font-black py-3.5 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2">
+                                        <button 
+                                            onClick={() => window.open(uni.applicationLink || uni.url, '_blank')}
+                                            className="w-full bg-[#ff6b00] hover:bg-[#e05e00] text-white font-black py-3.5 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                                        >
                                             <span>Send Application Link</span>
                                             <Navigation size={16} />
                                         </button>
-                                        <p className="text-[10px] text-slate-400 text-center mt-3 uppercase tracking-widest font-bold">Auto-Locks LSQ Profile to {uni.name.substring(0, 10)}...</p>
+                                        
+                                        {brochureLink && (
+                                            <div className="flex gap-2 mt-3">
+                                                <button 
+                                                    onClick={() => window.open(brochureLink, '_blank')}
+                                                    className="flex-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-[13px] py-3.5 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                                                >
+                                                    <Eye size={16} /> View Brochure
+                                                </button>
+                                                <a 
+                                                    href={brochureLink} 
+                                                    download
+                                                    className="flex-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-[13px] py-3.5 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                                                >
+                                                    <Download size={16} /> Download
+                                                </a>
+                                            </div>
+                                        )}
+                                        <p className="text-[10px] text-slate-400 text-center mt-4 uppercase tracking-widest font-bold">Auto-Locks LSQ Profile to {uni.name.substring(0, 10)}...</p>
                                     </div>
                                 </div>
                             </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Building2, BookOpen, GraduationCap, CheckCircle2, Star, PhoneCall, TrendingUp, Shield, Zap, Users, BadgeCheck, Lightbulb, Wallet, Laptop, Globe2, Target, Award, PlayCircle, MapPin, HeartHandshake, AlertTriangle, FileText, MessagesSquare, Banknote, SlidersHorizontal, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Building2, BookOpen, GraduationCap, CheckCircle2, Star, PhoneCall, TrendingUp, Shield, ShieldCheck, Trophy, Zap, Users, BadgeCheck, Lightbulb, Wallet, Laptop, Globe2, Target, Award, PlayCircle, MapPin, HeartHandshake, AlertTriangle, FileText, MessagesSquare, Banknote, SlidersHorizontal, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -68,73 +68,65 @@ const Dashboard = () => {
 
   return (
     <div className="pb-16 min-h-screen bg-[#f4f7fa]">
-      {/* 1. Hero Section - Internal Portal Warning & Title */}
-      <div className="bg-primary-600 text-white relative overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-10">
-           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" strokeDasharray="4 4" />
-                 </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
-           </svg>
+      {/* 1. Hero Section - Advanced Terminal Style */}
+      <div className="bg-[#0f172a] text-white relative overflow-hidden border-b border-slate-800">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[#0f172a]"></div>
         </div>
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-400/30 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary-700/40 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/4"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32 flex flex-col items-center text-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/20 border border-red-400/30 backdrop-blur-md mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded bg-red-500/10 border border-red-500/20 mb-8"
           >
-            <AlertTriangle size={16} className="text-red-400" />
-            <span className="text-sm font-bold tracking-wide text-red-100">INTERNAL ONLY: For Employee Training & Mock Calls</span>
+            <AlertTriangle size={14} className="text-red-400" />
+            <span className="text-[11px] font-black tracking-widest text-red-400 uppercase">INTERNAL ONLY: For Employee Training & Mock Calls</span>
           </motion.div>
 
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-tight leading-[1.1]"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight leading-[1.1]"
           >
-            College Buddy <span className="text-accent-400">Mock Call</span><br className="hidden md:block" /> Training Simulator
+            Counselor <span className="text-blue-400">Terminal</span><br className="hidden md:block" /> Training Matrix
           </motion.h1>
 
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-base sm:text-lg md:text-xl text-primary-100 mb-10 md:mb-12 max-w-3xl font-medium px-2"
+            className="text-base sm:text-lg md:text-xl text-slate-400 mb-10 md:mb-12 max-w-3xl font-medium px-2 leading-relaxed"
           >
-            Welcome to the ultimate resource for counselors. Memorize our USPs, master the 30+ comparison parameters, and practice real-world mock calls to become a top-tier educational advisor. 
+            Access the ultimate institutional database. Memorize key USPs, cross-reference 30+ parameters, and run verified mock calls to maximize enrollment conversion rates.
           </motion.p>
           
           {/* Main Search Bar */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="w-full max-w-4xl bg-white p-3 md:p-3 rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col sm:flex-row gap-3"
+            className="w-full max-w-4xl bg-slate-800/80 p-2 rounded-xl border border-slate-700 flex flex-col sm:flex-row gap-2 shadow-2xl"
           >
-            <div className="flex-1 flex items-center bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 sm:py-0 relative focus-within:ring-2 focus-within:ring-primary-500/20 focus-within:border-primary-500/50 transition-all">
+            <div className="flex-1 flex items-center bg-transparent rounded-lg px-4 py-3 relative focus-within:bg-slate-800 transition-all">
               <PhoneCall size={20} className="text-slate-400" />
               <input 
                  type="text" 
-                 placeholder="Search Universities to start a Mock Call session..." 
-                 className="w-full bg-transparent border-none outline-none pl-3 text-slate-800 placeholder-slate-400 font-bold"
+                 placeholder="Query Institutions for Mock Session..." 
+                 className="w-full bg-transparent border-none outline-none pl-3 text-white placeholder-slate-500 font-bold text-lg tracking-tight"
                  onFocus={handleSearchClick}
                  readOnly
               />
             </div>
             <button 
                onClick={handleSearchClick}
-               className="bg-accent-500 hover:bg-accent-600 text-white font-bold py-4 sm:py-3 px-8 rounded-xl shadow-md shadow-accent-500/20 transition-all flex items-center justify-center gap-2"
+               className="bg-blue-600 hover:bg-blue-500 border border-blue-500 text-white font-bold py-4 sm:py-3 px-8 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
             >
                <PlayCircle size={18} />
-               Start Mock Call
+               Execute Session
             </button>
           </motion.div>
 
@@ -143,20 +135,20 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col sm:flex-row gap-4 mt-6 z-20 relative"
+            className="flex flex-col sm:flex-row gap-4 mt-8 z-20 relative"
           >
              <button 
                 onClick={() => navigate('/student-profiler')}
-                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold py-4 px-8 rounded-xl backdrop-blur-md transition-all flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
+                className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 text-[13px]"
              >
-                <Target size={18} />
+                <Target size={16} />
                 Launch Degree Matcher
              </button>
              <button 
                 onClick={() => navigate('/counselor-framework')}
-                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold py-4 px-8 rounded-xl backdrop-blur-md transition-all flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
+                className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 text-[13px]"
              >
-                <CheckCircle2 size={18} />
+                <CheckCircle2 size={16} />
                 Counselor Framework Flow
              </button>
           </motion.div>
@@ -165,77 +157,80 @@ const Dashboard = () => {
              initial={{ opacity: 0 }}
              whileInView={{ opacity: 1 }}
              viewport={{ once: true }}
-             className="flex flex-wrap justify-center gap-4 text-sm font-semibold text-primary-100 mt-8"
+             className="flex flex-wrap justify-center gap-6 text-[12px] font-bold tracking-wide text-slate-400 mt-10 uppercase"
           >
-             <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-emerald-400" /> Always pitch 100% Free Guidance</span>
+             <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-blue-400" /> Pitch 100% Free Guidance</span>
              <span className="hidden sm:inline opacity-30">|</span>
-             <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-emerald-400" /> Memorize UGC-DEB guidelines</span>
+             <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-blue-400" /> Follow UGC-DEB Mandates</span>
              <span className="hidden sm:inline opacity-30">|</span>
-             <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-emerald-400" /> Use AI-Powered Personalization data</span>
+             <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-blue-400" /> Use Deep Data Points</span>
           </motion.div>
         </div>
       </div>
 
-      {/* 2. Counselor Performance Widget */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20 pb-8">
-        <div className="glass-card-premium rounded-[2rem] p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-           <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 p-1 shadow-lg shrink-0">
-                 <img src="https://ui-avatars.com/api/?name=Counselor&background=ffffff&color=0056d2&bold=true" alt="Profile" className="w-full h-full rounded-full border-2 border-white" />
+      {/* 2. Counselor Performance Widget - No Glow */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-20 pb-8">
+        <div className="bg-white border border-slate-200 shadow-[0_2px_15px_rgba(0,0,0,0.05)] rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row items-center justify-between gap-6">
+           <div className="flex items-center gap-5 w-full lg:w-auto">
+              <div className="w-14 h-14 rounded-lg bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center">
+                 <div className="w-10 h-10 bg-slate-900 rounded-[0.25rem] flex items-center justify-center text-white font-black text-lg">
+                     C
+                 </div>
               </div>
               <div>
-                 <h3 className="text-xl font-black text-slate-900 tracking-tight">Welcome back, Counselor</h3>
-                 <p className="text-sm font-bold text-slate-500">Your mock call performance is strictly monitored.</p>
+                 <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-xl font-black text-slate-900 tracking-tight">System Authentication</h3>
+                    <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-0.5 rounded border border-emerald-200 uppercase tracking-widest flex items-center gap-1"><ShieldCheck size={10}/> Valid</span>
+                 </div>
+                 <p className="text-[13px] font-bold text-slate-500">Counselor metrics actively recording to centralized ledger.</p>
               </div>
            </div>
            
-           <div className="grid grid-cols-3 gap-3 md:gap-6 w-full md:w-auto">
-              <div className="bg-slate-50 border border-slate-100 p-3 md:p-4 rounded-xl flex flex-col items-center justify-center min-w-[100px]">
-                 <span className="text-2xl font-black text-primary-600">12</span>
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Calls Logged</span>
+           <div className="grid grid-cols-3 gap-3 md:gap-4 w-full lg:w-auto shrink-0">
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col items-center justify-center min-w-[120px]">
+                 <span className="text-2xl font-black text-slate-900 tracking-tight mb-0.5">12</span>
+                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1"><PhoneCall size={10} className="text-blue-500"/> Sessions</span>
               </div>
-              <div className="bg-slate-50 border border-slate-100 p-3 md:p-4 rounded-xl flex flex-col items-center justify-center min-w-[100px] relative overflow-hidden">
-                 <div className="absolute inset-0 bg-emerald-400/10 z-0"></div>
-                 <span className="text-2xl font-black text-emerald-600 z-10">94%</span>
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 z-10">Avg Score</span>
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col items-center justify-center min-w-[120px]">
+                 <span className="text-2xl font-black text-emerald-600 tracking-tight mb-0.5">94%</span>
+                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1"><CheckCircle2 size={10} className="text-emerald-500"/> Win Rate</span>
               </div>
-              <div className="bg-slate-50 border border-slate-100 p-3 md:p-4 rounded-xl flex flex-col items-center justify-center min-w-[100px]">
-                 <span className="text-2xl font-black text-accent-500">Top 5%</span>
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Rank</span>
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col items-center justify-center min-w-[120px]">
+                 <span className="text-2xl font-black text-blue-600 tracking-tight mb-0.5">Top 5%</span>
+                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1"><Trophy size={10} className="text-blue-500"/> Global Rank</span>
               </div>
            </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 pb-12">
-        <div className="glass-card-premium rounded-[2rem] p-6 md:p-8 lg:p-10">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-slate-100">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 md:p-8 lg:p-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
                 <div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 font-black text-[10px] uppercase tracking-widest mb-3 border border-red-100 opacity-90">
-                        <Shield fontVariant="solid" size={12}/> Core Mandate
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-widest mb-4 border border-slate-200">
+                        <Shield size={12}/> Core Mandates
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Absolute Facts to Memorize</h2>
+                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Absolute Directives</h2>
                 </div>
-                <p className="text-slate-500 font-semibold md:max-w-[280px] md:text-right text-sm leading-relaxed">
-                    Do not falter on these during mock calls. These are our fundamental truths.
+                <p className="text-slate-500 font-bold md:max-w-[320px] md:text-right text-[13px] leading-relaxed">
+                    Counselors must strictly adhere to these fundamental truths during all student interactions.
                 </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Platform Goal', value: 'Unbiased Decision Partner', icon: <Target size={24} />, desc: "We are NOT an agent. We guide, we don't sell.", color: 'bg-primary-50 border-primary-100 text-primary-600', iconColor: 'text-primary-600' },
-                    { label: 'Financial Aid Given', value: 'CB Subsidy', icon: <Wallet size={24} />, desc: "Up to ₹10,000 subsidy available for eligible students.", color: 'bg-amber-50 border-amber-100 text-amber-600', iconColor: 'text-amber-500' },
-                    { label: 'Admission Process', value: 'Direct to Univ.', icon: <Banknote size={24} />, desc: "Students pay fees DIRECTLY on the official gateway, not to us.", color: 'bg-emerald-50 border-emerald-100 text-emerald-600', iconColor: 'text-emerald-500' },
-                    { label: 'Comparison Tool', value: '30+ Parameters', icon: <SlidersHorizontal size={24} />, desc: "Compare fees, EMI, syllabus depth, ROI, faculty, and LMS.", color: 'bg-rose-50 border-rose-100 text-rose-600', iconColor: 'text-rose-500' },
+                    { label: 'Platform Goal', value: 'Unbiased Partner', icon: <Target size={20} />, desc: "We are NOT an agent. We guide, we don't sell.", color: 'border-blue-200 bg-blue-50/50', iconColor: 'text-blue-600', iconBg: 'bg-white border-blue-100' },
+                    { label: 'Financial Aid Given', value: 'CB Subsidy', icon: <Wallet size={20} />, desc: "Up to ₹10,000 subsidy available for eligible students.", color: 'border-emerald-200 bg-emerald-50/50', iconColor: 'text-emerald-600', iconBg: 'bg-white border-emerald-100' },
+                    { label: 'Admission Process', value: 'Direct Payment', icon: <Banknote size={20} />, desc: "Students pay fees DIRECTLY on the official gateway.", color: 'border-indigo-200 bg-indigo-50/50', iconColor: 'text-indigo-600', iconBg: 'bg-white border-indigo-100' },
+                    { label: 'Comparison Tool', value: '30+ Parameters', icon: <SlidersHorizontal size={20} />, desc: "Compare fees, EMI, syllabus depth, ROI, faculty.", color: 'border-rose-200 bg-rose-50/50', iconColor: 'text-rose-600', iconBg: 'bg-white border-rose-100' },
                 ].map((stat, i) => (
-                    <div key={i} className={`p-6 rounded-2xl border ${stat.color} flex flex-col items-start hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group`}>
-                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-white/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-                        <div className={`w-12 h-12 bg-white rounded-xl shadow-sm border border-white flex items-center justify-center mb-5 ${stat.iconColor}`}>
+                    <div key={i} className={`p-5 rounded-xl border ${stat.color} flex flex-col items-start transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm group`}>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4 border shadow-sm ${stat.iconBg} ${stat.iconColor}`}>
                             {stat.icon}
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">{stat.label}</p>
-                        <h3 className="text-[19px] font-black leading-tight mb-2 text-slate-900 tracking-tight">{stat.value}</h3>
-                        <p className="text-slate-600 text-sm font-semibold leading-relaxed mix-blend-multiply opacity-90 mt-auto">{stat.desc}</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">{stat.label}</p>
+                        <h3 className="text-[17px] font-black leading-tight mb-2 text-slate-900 tracking-tight">{stat.value}</h3>
+                        <p className="text-slate-600 text-[13px] font-medium leading-relaxed mt-auto">{stat.desc}</p>
                     </div>
                 ))}
             </div>
@@ -243,41 +238,43 @@ const Dashboard = () => {
       </div>
 
       {/* 3. Objection Handling & Rebuttals (Mock Call Preparation) */}
-      <section className="bg-slate-50 py-16 md:py-24 border-y border-slate-200 relative overflow-hidden">
+      <section className="bg-[#0f172a] py-16 md:py-24 border-y border-slate-800 relative overflow-hidden text-white">
          {/* Decorative Background Elements */}
-         <div className="absolute top-0 right-1/4 w-[300px] h-[300px] bg-primary-200/20 rounded-full blur-[80px] pointer-events-none"></div>
-         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-blue-200/20 rounded-full blur-[100px] pointer-events-none"></div>
+         <div className="absolute inset-0 pointer-events-none z-0">
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[#0f172a]"></div>
+         </div>
 
          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-16">
-               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 text-red-600 font-bold text-xs uppercase tracking-widest mb-4 border border-red-100 shadow-sm">
+               <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-500/10 border border-red-500/20 text-red-400 font-black text-[10px] uppercase tracking-widest mb-6">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                   </span>
-                  Critical Scenarios
+                  Critical Threat Scenarios
                </div>
-               <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-6 leading-tight tracking-tight">Master The Objections</h2>
-               <p className="text-base md:text-lg text-slate-600 font-medium max-w-2xl mx-auto">These are the most high-value pushbacks you'll face on live calls. Expand to memorize the exact pitch that builds trust and closes the deal.</p>
+               <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 leading-tight tracking-tight">Master The Objections</h2>
+               <p className="text-base md:text-lg text-slate-400 font-medium max-w-2xl mx-auto">These are the highest-friction pushbacks from leads. Expand to memorize the exact verified pitch script to systematically build trust and close the deal.</p>
             </div>
 
-            <div className="space-y-5 mb-12">
+            <div className="space-y-4 mb-12">
                {visibleObjections.map((obj) => (
-                  <div key={obj.id} className={`bg-white rounded-2xl border transition-all duration-300 hover:shadow-lg overflow-hidden ${expandedId === obj.id ? 'border-primary-400 shadow-[0_0_0_4px_rgba(75,124,243,0.1)]' : 'border-slate-200 shadow-sm'}`}>
+                  <div key={obj.id} className={`bg-slate-800/80 rounded-xl border transition-all duration-200 overflow-hidden ${expandedId === obj.id ? 'border-blue-500 shadow-md' : 'border-slate-700 shadow-sm'}`}>
                      <button 
                         onClick={() => setExpandedId(expandedId === obj.id ? null : obj.id)}
-                        className={`w-full text-left p-5 md:px-6 md:py-6 flex items-center justify-between group transition-colors ${expandedId === obj.id ? 'bg-[#f8fafc]' : 'hover:bg-slate-50'}`}
+                        className={`w-full text-left p-5 flex items-center justify-between group transition-colors ${expandedId === obj.id ? 'bg-slate-800' : 'hover:bg-slate-800/50'}`}
                      >
-                        <div className="flex items-center gap-5">
-                           <span className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-[15px] shrink-0 transition-colors shadow-sm ${expandedId === obj.id ? 'bg-primary-600 text-white' : 'bg-primary-50 text-primary-700 group-hover:bg-primary-100'}`}>
+                        <div className="flex items-center gap-4">
+                           <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-[14px] shrink-0 transition-colors shadow-sm ${expandedId === obj.id ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300 group-hover:bg-slate-600'}`}>
                               {obj.id}
                            </span>
-                           <h3 className={`text-[17px] md:text-[19px] pr-4 font-extrabold transition-colors leading-snug ${expandedId === obj.id ? 'text-primary-700' : 'text-slate-800 group-hover:text-primary-600'}`}>
+                           <h3 className={`text-[15px] md:text-[17px] pr-4 font-bold transition-colors leading-snug tracking-tight ${expandedId === obj.id ? 'text-white' : 'text-slate-200 group-hover:text-blue-400'}`}>
                               "{obj.question}"
                            </h3>
                         </div>
-                        <div className={`shrink-0 ml-2 w-10 h-10 rounded-full flex items-center justify-center transition-colors border shadow-sm ${expandedId === obj.id ? 'bg-white border-primary-200 text-primary-600' : 'bg-white border-slate-200 text-slate-400 group-hover:border-slate-300'}`}>
-                           {expandedId === obj.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        <div className={`shrink-0 ml-2 w-8 h-8 rounded-lg flex items-center justify-center transition-colors border shadow-sm ${expandedId === obj.id ? 'bg-blue-600/10 border-blue-500/30 text-blue-400' : 'bg-slate-700 border-slate-600 text-slate-400 group-hover:border-slate-500'}`}>
+                           {expandedId === obj.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                         </div>
                      </button>
                      
@@ -287,21 +284,21 @@ const Dashboard = () => {
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.2 }}
+                              transition={{ duration: 0.15 }}
                            >
-                              <div className="px-6 pb-8 pt-2 bg-[#f8fafc]">
-                                 <div className="bg-gradient-to-br from-white to-primary-50/30 p-6 md:p-8 rounded-2xl border border-primary-100 shadow-sm relative overflow-hidden">
-                                     <div className="flex items-center gap-2.5 mb-5">
-                                        <div className="bg-emerald-500 p-1.5 rounded-lg text-white shadow-sm"><FileText size={16}/></div>
-                                        <h4 className="font-black text-slate-800 text-[13px] tracking-widest uppercase">Verified Pitch Script</h4>
+                              <div className="px-5 pb-5 pt-1">
+                                 <div className="bg-slate-900/50 p-5 rounded-lg border border-slate-700 relative overflow-hidden">
+                                     <div className="flex items-center gap-2.5 mb-4">
+                                        <div className="bg-emerald-500/10 p-1.5 rounded text-emerald-400 border border-emerald-500/20 shadow-sm"><FileText size={14}/></div>
+                                        <h4 className="font-black text-slate-300 text-[11px] tracking-widest uppercase">Verified Pitch Script</h4>
                                      </div>
-                                     <p className="text-slate-700 font-medium text-lg md:text-[19px] leading-relaxed pl-5 border-l-[4px] border-primary-400 mb-8 italic">
+                                     <p className="text-slate-300 font-medium text-[15px] md:text-[16px] leading-relaxed pl-4 border-l-2 border-emerald-500 mb-6">
                                          {obj.pitch}
                                      </p>
-                                     <div className="flex flex-wrap gap-3">
+                                     <div className="flex flex-wrap gap-2.5">
                                         {obj.points.map((pt, i) => (
-                                           <span key={i} className="flex items-center gap-2 text-[13px] font-bold text-slate-700 bg-white border border-slate-200 px-3.5 py-1.5 rounded-xl shadow-sm">
-                                              <CheckCircle2 size={16} className="text-emerald-500"/> {pt}
+                                           <span key={i} className="flex items-center gap-1.5 text-[11px] font-bold text-slate-300 bg-slate-800 border border-slate-600 px-3 py-1.5 rounded-lg shadow-sm">
+                                              <CheckCircle2 size={12} className="text-blue-400"/> {pt}
                                            </span>
                                         ))}
                                      </div>
@@ -317,38 +314,35 @@ const Dashboard = () => {
             <div className="text-center">
                <button 
                   onClick={() => setShowAllObjections(!showAllObjections)}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-extrabold rounded-2xl transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 border border-slate-700 hover:border-slate-600 text-white font-bold rounded-lg transition-all shadow-sm text-[13px]"
                >
-                  {showAllObjections ? 'Hide Scenarios' : 'Reveal All 8 Scenarios'} <ChevronDown size={20} className={showAllObjections ? 'rotate-180 transition-transform' : 'transition-transform'} />
+                  {showAllObjections ? 'Hide Scenarios' : 'Reveal All 8 Scenarios'} <ChevronDown size={16} className={showAllObjections ? 'rotate-180 transition-transform' : 'transition-transform'} />
                </button>
             </div>
          </div>
       </section>
 
       {/* 4. The Competition: Why We Win */}
-      <section className="py-16 md:py-20 lg:py-28 bg-primary-700 text-white relative overflow-hidden">
-         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-600/50 rounded-full blur-[100px]"></div>
-         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-600/30 rounded-full blur-[100px]"></div>
-         
+      <section className="py-16 md:py-24 bg-white relative overflow-hidden border-b border-slate-200">
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-16">
-               <span className="text-accent-400 font-bold tracking-wider uppercase text-sm mb-3 block">Competitive Analysis for Training</span>
-               <h2 className="text-3xl md:text-4xl font-extrabold mb-6">College Buddy vs. Traditional Portals</h2>
-               <p className="text-base md:text-lg text-primary-100 max-w-2xl mx-auto font-medium">Understand our positioning in the market so you can easily dismantle comparisons to generic ed-tech websites.</p>
+               <span className="text-slate-500 font-black tracking-widest uppercase text-[10px] mb-3 block">Competitive Matrix</span>
+               <h2 className="text-2xl md:text-3xl lg:text-4xl font-black mb-4 text-slate-900 tracking-tight">Dismantle Generic Competitors</h2>
+               <p className="text-sm md:text-base text-slate-500 max-w-2xl mx-auto font-bold">Understand our exact architectural advantages over broad-market lead-gen portals.</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                {[
-                  { title: "Niche vs Broad", desc: "Competitors like Shiksha or Collegedunia try to do everything (Campus, Abroad, Coaching). We specialize ONLY in Online & Distance learning, making us the absolute authority in this vertical.", icon: <Star className="text-accent-400" size={32} /> },
-                  { title: "Data Authenticity", desc: "Generic portals rely on user-submitted data which is easily faked. We pull data directly from official university APIs and verified students, comparing over 30 hard parameters.", icon: <BadgeCheck className="text-accent-400" size={32} /> },
-                  { title: "Counseling Motive", desc: "Others sell leads to the highest bidder. Our AI tools match students perfectly based on profile fit, removing human bias and pure lead generation tactics.", icon: <Shield className="text-accent-400" size={32} /> }
+                  { title: "Niche vs Broad", desc: "Competitors dilute focus across Campus/Abroad/Coaching. We exclusively dominate the Online & Distance vertical.", icon: <Target className="text-indigo-600" size={24} />, color: 'bg-indigo-50 border-indigo-200' },
+                  { title: "Data Authenticity", desc: "They use faked user-submitted data. We utilize direct university APIs cross-referenced against 30+ strict parameters.", icon: <BadgeCheck className="text-emerald-600" size={24} />, color: 'bg-emerald-50 border-emerald-200' },
+                  { title: "Counseling Motive", desc: "They auction leads to the highest bidder. We algorithmically match students based on precise profile alignment.", icon: <Shield className="text-blue-600" size={24} />, color: 'bg-blue-50 border-blue-200' }
                ].map((item, i) => (
-                  <div key={i} className="bg-white/10 border border-white/20 p-8 rounded-2xl backdrop-blur-sm relative hover:-translate-y-2 transition-transform">
-                     <div className="mb-6 bg-white/10 w-16 h-16 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10">
+                  <div key={i} className="bg-white border border-slate-200 p-6 rounded-2xl relative hover:-translate-y-1 transition-all hover:shadow-md">
+                     <div className={`mb-5 w-12 h-12 rounded-xl flex items-center justify-center border ${item.color}`}>
                         {item.icon}
                      </div>
-                     <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
-                     <p className="text-primary-100 font-medium leading-relaxed">{item.desc}</p>
+                     <h3 className="text-[18px] font-black mb-2 text-slate-900 tracking-tight">{item.title}</h3>
+                     <p className="text-slate-600 text-[13px] font-medium leading-relaxed">{item.desc}</p>
                   </div>
                ))}
             </div>
@@ -356,34 +350,33 @@ const Dashboard = () => {
       </section>
 
       {/* 5. Post-Admission & CB Community (Upsell / Trust Building) */}
-      <section className="bg-[#f8fafc] py-16 md:py-24 border-b border-slate-200 relative overflow-hidden">
-         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "radial-gradient(#000 1px, transparent 1px)", backgroundSize: "30px 30px" }}></div>
+      <section className="bg-slate-50 py-16 md:py-24 border-b border-slate-200 relative overflow-hidden">
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                <div className="lg:w-[55%]">
-                  <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-emerald-100 text-emerald-700 font-extrabold text-xs uppercase tracking-widest mb-5 border border-emerald-200 shadow-sm">
-                     <Shield size={14} /> Trust Pillar
+                  <span className="inline-flex items-center gap-2 py-1 px-3 rounded bg-emerald-500/10 text-emerald-600 font-black text-[10px] uppercase tracking-widest mb-5 border border-emerald-500/20">
+                     <ShieldCheck size={12} /> Post-Admission Retention
                   </span>
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-6 leading-tight">Pitching the "Beyond Admission" Value</h2>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-6 leading-tight tracking-tight">Pitching the "Beyond Admission" Value</h2>
                   <p className="text-base md:text-lg text-slate-600 mb-8 font-medium leading-relaxed">
-                     Students are terrified of being abandoned after paying fees. In your mock calls, you MUST pitch these support structures to confidently close the deal.
+                     Leads drop off due to fear of abandonment. Counselors must execute these three trust pillars to secure conversions.
                   </p>
                   <div className="space-y-3">
                      {/* Pillar 1 */}
-                     <div className={`bg-white rounded-xl border transition-all duration-300 ${activePillar === 1 ? 'border-primary-400 shadow-md' : 'border-slate-200 shadow-sm'}`}>
+                     <div className={`bg-white rounded-lg border transition-all duration-200 ${activePillar === 1 ? 'border-blue-400 shadow-sm' : 'border-slate-200'}`}>
                         <button 
                            onClick={() => setActivePillar(1)}
-                           className={`w-full text-left px-4 py-3 md:py-3.5 flex items-center justify-between group transition-colors ${activePillar === 1 ? 'bg-primary-50/50 rounded-t-xl' : 'hover:bg-slate-50 rounded-xl'}`}
+                           className={`w-full text-left px-4 py-3 flex items-center justify-between group transition-colors ${activePillar === 1 ? 'bg-blue-50/50 rounded-t-lg' : 'hover:bg-slate-50 rounded-lg'}`}
                         >
                            <div className="flex items-center gap-3">
-                              <span className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${activePillar === 1 ? 'bg-primary-600 text-white shadow-sm' : 'bg-primary-100 text-primary-700'}`}>
-                                 <Users size={16} />
+                              <span className={`w-8 h-8 rounded flex items-center justify-center shrink-0 transition-colors ${activePillar === 1 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                 <Users size={14} />
                               </span>
-                              <h3 className={`text-[14px] md:text-[15px] font-bold transition-colors ${activePillar === 1 ? 'text-primary-800' : 'text-slate-700 group-hover:text-primary-600'}`}>
+                              <h3 className={`text-[14px] font-black tracking-tight transition-colors ${activePillar === 1 ? 'text-slate-900' : 'text-slate-700 group-hover:text-blue-600'}`}>
                                  The CB Community
                               </h3>
                            </div>
-                           <ChevronDown size={16} className={`text-slate-400 transition-transform ${activePillar === 1 ? 'rotate-180 text-primary-500' : ''}`} />
+                           <ChevronDown size={16} className={`text-slate-400 transition-transform ${activePillar === 1 ? 'rotate-180 text-blue-500' : ''}`} />
                         </button>
                         
                         <AnimatePresence>
@@ -394,10 +387,10 @@ const Dashboard = () => {
                                  exit={{ height: 0, opacity: 0 }}
                                  transition={{ duration: 0.15 }}
                               >
-                                 <div className="px-4 pb-4 md:px-5 md:pb-5 bg-primary-50/50 rounded-b-xl border-t border-primary-100/50">
+                                 <div className="px-4 pb-4 md:px-5 md:pb-5 bg-blue-50/50 rounded-b-lg border-t border-blue-100/50">
                                     <p className="text-slate-600 font-medium text-[13px] leading-relaxed mb-3 mt-1.5">Connect with 50K+ peers and alumni to instantly resolve the isolation of remote learning.</p>
-                                    <div className="bg-white border-l-[3px] border-emerald-400 pl-3 py-2 rounded-r-lg shadow-sm">
-                                         <p className="text-[10px] font-black tracking-widest uppercase text-emerald-600 mb-0.5">Key Script</p>
+                                    <div className="bg-white border-l-2 border-emerald-500 pl-3 py-2 rounded-r shadow-sm">
+                                         <p className="text-[9px] font-black tracking-widest uppercase text-slate-400 mb-0.5">Mandatory Script</p>
                                          <p className="text-slate-800 font-bold text-[13px] italic leading-tight">"You will never study alone. You get access to 50,000+ peers."</p>
                                     </div>
                                  </div>
@@ -407,20 +400,20 @@ const Dashboard = () => {
                      </div>
 
                      {/* Pillar 2 */}
-                     <div className={`bg-white rounded-xl border transition-all duration-300 ${activePillar === 2 ? 'border-primary-400 shadow-md' : 'border-slate-200 shadow-sm'}`}>
+                     <div className={`bg-white rounded-lg border transition-all duration-200 ${activePillar === 2 ? 'border-blue-400 shadow-sm' : 'border-slate-200'}`}>
                         <button 
                            onClick={() => setActivePillar(2)}
-                           className={`w-full text-left px-4 py-3 md:py-3.5 flex items-center justify-between group transition-colors ${activePillar === 2 ? 'bg-primary-50/50 rounded-t-xl' : 'hover:bg-slate-50 rounded-xl'}`}
+                           className={`w-full text-left px-4 py-3 flex items-center justify-between group transition-colors ${activePillar === 2 ? 'bg-blue-50/50 rounded-t-lg' : 'hover:bg-slate-50 rounded-lg'}`}
                         >
                            <div className="flex items-center gap-3">
-                              <span className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${activePillar === 2 ? 'bg-primary-600 text-white shadow-sm' : 'bg-primary-100 text-primary-700'}`}>
-                                 <Target size={16} />
+                              <span className={`w-8 h-8 rounded flex items-center justify-center shrink-0 transition-colors ${activePillar === 2 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                 <Target size={14} />
                               </span>
-                              <h3 className={`text-[14px] md:text-[15px] font-bold transition-colors ${activePillar === 2 ? 'text-primary-800' : 'text-slate-700 group-hover:text-primary-600'}`}>
+                              <h3 className={`text-[14px] font-black tracking-tight transition-colors ${activePillar === 2 ? 'text-slate-900' : 'text-slate-700 group-hover:text-blue-600'}`}>
                                  Job & Internship Portal
                               </h3>
                            </div>
-                           <ChevronDown size={16} className={`text-slate-400 transition-transform ${activePillar === 2 ? 'rotate-180 text-primary-500' : ''}`} />
+                           <ChevronDown size={16} className={`text-slate-400 transition-transform ${activePillar === 2 ? 'rotate-180 text-blue-500' : ''}`} />
                         </button>
                         
                         <AnimatePresence>
@@ -431,10 +424,10 @@ const Dashboard = () => {
                                  exit={{ height: 0, opacity: 0 }}
                                  transition={{ duration: 0.15 }}
                               >
-                                 <div className="px-4 pb-4 md:px-5 md:pb-5 bg-primary-50/50 rounded-b-xl border-t border-primary-100/50">
+                                 <div className="px-4 pb-4 md:px-5 md:pb-5 bg-blue-50/50 rounded-b-lg border-t border-blue-100/50">
                                     <p className="text-slate-600 font-medium text-[13px] leading-relaxed mb-3 mt-1.5">We offer resume building, interview prep, and direct access to 300+ hiring partners.</p>
-                                    <div className="bg-white border-l-[3px] border-emerald-400 pl-3 py-2 rounded-r-lg shadow-sm">
-                                         <p className="text-[10px] font-black tracking-widest uppercase text-emerald-600 mb-0.5">Key Script</p>
+                                    <div className="bg-white border-l-2 border-emerald-500 pl-3 py-2 rounded-r shadow-sm">
+                                         <p className="text-[9px] font-black tracking-widest uppercase text-slate-400 mb-0.5">Mandatory Script</p>
                                          <p className="text-slate-800 font-bold text-[13px] italic leading-tight">"We take responsibility for your placement prep, unconditionally."</p>
                                     </div>
                                  </div>
@@ -444,20 +437,20 @@ const Dashboard = () => {
                      </div>
 
                      {/* Pillar 3 */}
-                     <div className={`bg-white rounded-xl border transition-all duration-300 ${activePillar === 3 ? 'border-primary-400 shadow-md' : 'border-slate-200 shadow-sm'}`}>
+                     <div className={`bg-white rounded-lg border transition-all duration-200 ${activePillar === 3 ? 'border-blue-400 shadow-sm' : 'border-slate-200'}`}>
                         <button 
                            onClick={() => setActivePillar(3)}
-                           className={`w-full text-left px-4 py-3 md:py-3.5 flex items-center justify-between group transition-colors ${activePillar === 3 ? 'bg-primary-50/50 rounded-t-xl' : 'hover:bg-slate-50 rounded-xl'}`}
+                           className={`w-full text-left px-4 py-3 flex items-center justify-between group transition-colors ${activePillar === 3 ? 'bg-blue-50/50 rounded-t-lg' : 'hover:bg-slate-50 rounded-lg'}`}
                         >
                            <div className="flex items-center gap-3">
-                              <span className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${activePillar === 3 ? 'bg-primary-600 text-white shadow-sm' : 'bg-primary-100 text-primary-700'}`}>
-                                 <HeartHandshake size={16} />
+                              <span className={`w-8 h-8 rounded flex items-center justify-center shrink-0 transition-colors ${activePillar === 3 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                 <HeartHandshake size={14} />
                               </span>
-                              <h3 className={`text-[14px] md:text-[15px] font-bold transition-colors ${activePillar === 3 ? 'text-primary-800' : 'text-slate-700 group-hover:text-primary-600'}`}>
+                              <h3 className={`text-[14px] font-black tracking-tight transition-colors ${activePillar === 3 ? 'text-slate-900' : 'text-slate-700 group-hover:text-blue-600'}`}>
                                  Support Advocacy
                               </h3>
                            </div>
-                           <ChevronDown size={16} className={`text-slate-400 transition-transform ${activePillar === 3 ? 'rotate-180 text-primary-500' : ''}`} />
+                           <ChevronDown size={16} className={`text-slate-400 transition-transform ${activePillar === 3 ? 'rotate-180 text-blue-500' : ''}`} />
                         </button>
                         
                         <AnimatePresence>
@@ -468,10 +461,10 @@ const Dashboard = () => {
                                  exit={{ height: 0, opacity: 0 }}
                                  transition={{ duration: 0.15 }}
                               >
-                                 <div className="px-4 pb-4 md:px-5 md:pb-5 bg-primary-50/50 rounded-b-xl border-t border-primary-100/50">
+                                 <div className="px-4 pb-4 md:px-5 md:pb-5 bg-blue-50/50 rounded-b-lg border-t border-blue-100/50">
                                     <p className="text-slate-600 font-medium text-[13px] leading-relaxed mb-3 mt-1.5">If the university delays books or ignores queries, CB escalates and resolves it directly.</p>
-                                    <div className="bg-white border-l-[3px] border-emerald-400 pl-3 py-2 rounded-r-lg shadow-sm">
-                                         <p className="text-[10px] font-black tracking-widest uppercase text-emerald-600 mb-0.5">Key Script</p>
+                                    <div className="bg-white border-l-2 border-emerald-500 pl-3 py-2 rounded-r shadow-sm">
+                                         <p className="text-[9px] font-black tracking-widest uppercase text-slate-400 mb-0.5">Mandatory Script</p>
                                          <p className="text-slate-800 font-bold text-[13px] italic leading-tight">"If the university ignores you, we escalate it to the VCs directly."</p>
                                     </div>
                                  </div>
@@ -482,28 +475,26 @@ const Dashboard = () => {
                   </div>
                </div>
 
-               {/* Right Image Container */}
+               {/* Right Container */}
                <div className="lg:w-[45%] relative mt-16 lg:mt-0">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary-200 to-emerald-200 rounded-[2.5rem] transform rotate-3 scale-105 opacity-40 z-0"></div>
-                  <div className="relative z-10 bg-white p-2.5 rounded-[2.5rem] shadow-2xl">
-                     <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Team meeting" className="w-full h-full object-cover rounded-[2rem] aspect-[4/5] sm:aspect-[3/4] object-center" />
+                  <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+                     <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Team meeting" className="w-full h-full object-cover rounded-xl aspect-[4/5] sm:aspect-[3/4] object-center" />
                   </div>
                   
                   {/* Floating Refer & Earn Badge */}
-                  <div className="absolute -bottom-6 left-4 right-4 sm:-bottom-8 sm:-left-8 sm:right-auto bg-white/95 backdrop-blur-xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] p-5 rounded-3xl z-20 border border-white sm:w-[280px]">
+                  <div className="absolute -bottom-6 left-4 right-4 sm:-bottom-8 sm:-left-8 sm:right-auto bg-white shadow-lg p-5 rounded-xl z-20 border border-slate-200 sm:w-[280px]">
                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-500 shadow-inner">
-                            <Star size={24} className="fill-amber-400 text-amber-500" />
+                        <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center border border-amber-100 text-amber-500">
+                            <Star size={20} className="fill-amber-400 text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Secret Weapon</p>
-                            <p className="text-base font-extrabold text-slate-800 tracking-tight">Refer & Earn</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Incentive Mechanism</p>
+                            <p className="text-[15px] font-black text-slate-900 tracking-tight">Refer & Earn</p>
                         </div>
                      </div>
-                     <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl py-3.5 px-4 border border-amber-200/50 relative overflow-hidden">
-                         <div className="absolute -right-4 -top-4 w-16 h-16 bg-amber-400/20 rounded-full blur-xl"></div>
-                         <div className="text-amber-600 font-extrabold text-3xl tracking-tight text-center flex items-center justify-center gap-1">₹1000<span className="text-xl text-amber-500 font-black">+</span></div>
-                         <div className="text-amber-800/50 text-[10.5px] font-black uppercase text-center mt-1 tracking-widest">Reward per student</div>
+                     <div className="bg-slate-50 rounded-lg py-3 px-4 border border-slate-200 text-center">
+                         <div className="text-slate-900 font-black text-2xl tracking-tight flex items-center justify-center gap-1">₹1000<span className="text-lg text-slate-400 font-black">+</span></div>
+                         <div className="text-slate-500 text-[9px] font-black uppercase mt-1 tracking-widest">Bounty Per Enrollment</div>
                      </div>
                   </div>
                </div>
@@ -512,15 +503,15 @@ const Dashboard = () => {
       </section>
 
       {/* 6. Action Call to Search */}
-      <section className="py-16 md:py-20 bg-[#f4f7fa] text-center">
+      <section className="py-16 md:py-24 bg-white text-center border-t border-slate-200">
          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-6">Ready for your Mock Call Assessment?</h2>
-            <p className="text-base md:text-lg text-slate-600 mb-8 font-medium">Navigate to the University Data tool to find technical details on fees, accreditations, and syllabi for your assigned university scenario.</p>
+            <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-4 tracking-tight">Initiate Mock Session</h2>
+            <p className="text-sm md:text-base text-slate-500 mb-8 font-bold max-w-xl mx-auto">Access the institutional query engine to cross-reference fees, approvals, and syllabi.</p>
             <button 
                onClick={handleSearchClick}
-               className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg shadow-primary-500/30 transition-all hover:-translate-y-1 mx-auto flex items-center gap-3 text-lg"
+               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-sm transition-all hover:-translate-y-0.5 mx-auto flex items-center gap-2 text-[14px]"
             >
-               Open CRM Dashboard <ChevronRight size={20} />
+               Open CRM Dashboard <ChevronRight size={16} />
             </button>
          </div>
       </section>
