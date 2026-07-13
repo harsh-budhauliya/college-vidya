@@ -20,10 +20,6 @@ export default async function handler(req, res) {
     // In Vercel, req.headers['x-forwarded-for'] contains the IP
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-    if (!userId) {
-      return res.status(400).json({ error: 'Missing userId' });
-    }
-
     const session = await prisma.session.create({
       data: {
         userId,

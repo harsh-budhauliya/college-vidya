@@ -45,7 +45,7 @@ export function AnalyticsProvider({ children }) {
         const res = await fetch(`${BACKEND_URL}/api/track/init_session`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: 1, ...getDeviceData() }) // mock userId 1
+          body: JSON.stringify({ ...getDeviceData() }) // anonymous session for now
         });
         
         if (res.ok) {
