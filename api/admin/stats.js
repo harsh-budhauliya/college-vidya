@@ -32,18 +32,74 @@ export default async function handler(req, res) {
   try {
     const totalEmployees = await prisma.user.count({ where: { role: "EMPLOYEE" } });
     
-    // Consider sessions active if lastActivity was within the last 60 seconds
-    const activeTimeframe = new Date(Date.now() - 60000); 
-    const activeSessions = await prisma.session.count({ 
-      where: { 
-        status: "ONLINE",
-        lastActivity: { gte: activeTimeframe }
-      } 
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const oneMinuteAgo = new Date(now.getTime() - 60000);
+    const fiveMinutesAgo = new Date(now.getTime() - 300000);
+
+    // Active right now (within 1 min)
+    const activeRightNow = await prisma.session.count({ 
+      where: { lastActivity: { gte: oneMinuteAgo } } 
+    });
+
+    // Idle (1 to 5 mins ago)
+    const idleSessions = await prisma.session.count({
+      where: { lastActivity: { gte: fiveMinutesAgo, lt: oneMinuteAgo } }
+    });
+
+    // Online = Active + Idle
+    const online = activeRightNow + idleSessions;
+    
+    // Offline = Total Employees - Online (Ensure it doesn't go negative)
+    const offline = Math.max(0, totalEmployees - online);
+
+    // Working today (sessions created or active today)
+    const workingToday = await prisma.session.count({
+      where: { lastActivity: { gte: startOfToday } }
+    });
+
+    const totalTodaysVisits = await prisma.pageView.count({
+      where: { timestamp: { gte: startOfToday } }
+    });
+
+    // New vs Returning (based on IP or session)
+    // For simplicity, let's say sessions created today that don't share an IP with older sessions are New.
+    // Instead of complex queries, we'll estimate:
+    const todaysSessions = await prisma.session.findMany({
+      where: { loginTime: { gte: startOfToday } },
+      select: { ip: true }
     });
     
-    const totalVisits = await prisma.pageView.count();
+    const previousSessions = await prisma.session.findMany({
+      where: { loginTime: { lt: startOfToday } },
+      select: { ip: true }
+    });
+
+    const previousIps = new Set(previousSessions.map(s => s.ip).filter(Boolean));
+    let newEmployees = 0;
+    let returningEmployees = 0;
     
-    // Get page views for the last 7 days for the chart
+    const uniqueTodaysIps = new Set(todaysSessions.map(s => s.ip).filter(Boolean));
+    uniqueTodaysIps.forEach(ip => {
+      if (previousIps.has(ip)) returningEmployees++;
+      else newEmployees++;
+    });
+
+    // Average Session Time (today)
+    const todaySessionsFull = await prisma.session.findMany({
+      where: { loginTime: { gte: startOfToday } },
+      select: { loginTime: true, lastActivity: true }
+    });
+
+    let totalDurationMs = 0;
+    todaySessionsFull.forEach(s => {
+      totalDurationMs += (new Date(s.lastActivity) - new Date(s.loginTime));
+    });
+    
+    const avgSessionSecs = todaySessionsFull.length > 0 ? Math.floor(totalDurationMs / todaySessionsFull.length / 1000) : 0;
+    const avgSessionFormatted = `${Math.floor(avgSessionSecs / 60)}m ${avgSessionSecs % 60}s`;
+
+    // Activity chart (last 7 days pageviews)
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const recentViews = await prisma.pageView.findMany({
       where: { timestamp: { gte: sevenDaysAgo } },
@@ -75,8 +131,16 @@ export default async function handler(req, res) {
 
     res.status(200).json({
       totalEmployees,
-      activeSessions,
-      totalVisits,
+      employeesOnline: online,
+      employeesOffline: offline,
+      activeRightNow,
+      employeesIdle: idleSessions,
+      workingToday,
+      avgSessionTime: avgSessionFormatted,
+      totalTodaysVisits,
+      liveSessions: activeRightNow,
+      newEmployees,
+      returningEmployees,
       activityChart
     });
   } catch (error) {

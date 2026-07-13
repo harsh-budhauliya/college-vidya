@@ -1,5 +1,5 @@
 import { useAnalytics } from "../../context/AnalyticsContext";
-import { Users, Activity, Clock, MousePointer2 } from "lucide-react";
+import { Users, Activity, Clock, MousePointer2, UserCheck, UserX, Zap, Coffee, Calendar, Radio, UserPlus, RefreshCw } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function Dashboard() {
@@ -7,9 +7,16 @@ export default function Dashboard() {
 
   const cards = [
     { name: "Total Employees", value: stats.totalEmployees || 0, icon: Users, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-900/30" },
-    { name: "Active Sessions", value: stats.activeSessions || 0, icon: Activity, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-900/30" },
-    { name: "Total Page Views", value: stats.totalVisits || 0, icon: MousePointer2, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30" },
-    { name: "Avg Session", value: "12m 30s", icon: Clock, color: "text-orange-600", bg: "bg-orange-100 dark:bg-orange-900/30" }
+    { name: "Employees Online", value: stats.employeesOnline || 0, icon: UserCheck, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-900/30" },
+    { name: "Employees Offline", value: stats.employeesOffline || 0, icon: UserX, color: "text-red-600", bg: "bg-red-100 dark:bg-red-900/30" },
+    { name: "Active Right Now", value: stats.activeRightNow || 0, icon: Zap, color: "text-yellow-600", bg: "bg-yellow-100 dark:bg-yellow-900/30" },
+    { name: "Employees Idle", value: stats.employeesIdle || 0, icon: Coffee, color: "text-orange-600", bg: "bg-orange-100 dark:bg-orange-900/30" },
+    { name: "Working Today", value: stats.workingToday || 0, icon: Calendar, color: "text-indigo-600", bg: "bg-indigo-100 dark:bg-indigo-900/30" },
+    { name: "Avg Session Time", value: stats.avgSessionTime || "0m 0s", icon: Clock, color: "text-pink-600", bg: "bg-pink-100 dark:bg-pink-900/30" },
+    { name: "Today's Visits", value: stats.totalTodaysVisits || 0, icon: MousePointer2, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30" },
+    { name: "Live Sessions", value: stats.liveSessions || 0, icon: Radio, color: "text-rose-600", bg: "bg-rose-100 dark:bg-rose-900/30" },
+    { name: "New Employees", value: stats.newEmployees || 0, icon: UserPlus, color: "text-teal-600", bg: "bg-teal-100 dark:bg-teal-900/30" },
+    { name: "Returning Employees", value: stats.returningEmployees || 0, icon: RefreshCw, color: "text-cyan-600", bg: "bg-cyan-100 dark:bg-cyan-900/30" },
   ];
 
   const defaultData = [
@@ -30,23 +37,17 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Metric Cards Grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {cards.map((card) => (
-          <div key={card.name} className="bg-white dark:bg-gray-800 overflow-hidden rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className={`p-3 rounded-xl ${card.bg}`}>
-                    <card.icon className={`h-6 w-6 ${card.color}`} aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{card.name}</dt>
-                    <dd className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{card.value}</dd>
-                  </dl>
-                </div>
+          <div key={card.name} className="bg-white dark:bg-gray-800 overflow-hidden rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-200">
+            <div className="p-4 flex items-center">
+              <div className={`p-3 rounded-xl ${card.bg}`}>
+                <card.icon className={`h-6 w-6 ${card.color}`} aria-hidden="true" />
+              </div>
+              <div className="ml-4 w-0 flex-1">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate uppercase tracking-wider">{card.name}</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{card.value}</p>
               </div>
             </div>
           </div>
@@ -54,7 +55,7 @@ export default function Dashboard() {
       </div>
 
       {/* Main Chart */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mt-8">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Activity Timeline (Last 7 Days)</h3>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
