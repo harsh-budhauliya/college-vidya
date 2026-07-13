@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './Layout';
 import Dashboard from './pages/Dashboard';
@@ -8,12 +8,28 @@ import SpecializationDetails from './pages/SpecializationDetails';
 import CounselorFlow from './pages/CounselorFlow';
 import SpecializationGuide from './pages/SpecializationGuide';
 import StudentProfiler from './pages/StudentProfiler';
+import { AnalyticsProvider } from './context/AnalyticsContext';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/Dashboard';
+import EmployeesList from './pages/admin/EmployeesList';
+import AdminLogin from './pages/admin/AdminLogin';
+
+function AdminWrapper() {
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('adminToken'));
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={setIsAuthenticated} />;
+  }
+
+  return <AdminLayout />;
+}
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
+      <AnalyticsProvider>
+        <Routes>
+          <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="university-data" element={<MockCalls />} />
           <Route path="counselor-framework" element={<CounselorFlow />} />
@@ -40,7 +56,14 @@ function App() {
             </div>
           } />
         </Route>
-      </Routes>
+        <Route path="/admin" element={<AdminWrapper />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="employees" element={<EmployeesList />} />
+            <Route path="reports" element={<div className="p-8 font-bold text-gray-500">Reports Placeholder</div>} />
+            <Route path="settings" element={<div className="p-8 font-bold text-gray-500">Settings Placeholder</div>} />
+          </Route>
+        </Routes>
+      </AnalyticsProvider>
     </BrowserRouter>
   );
 }

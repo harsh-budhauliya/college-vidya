@@ -1,0 +1,54 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String
+  role      String    @default("EMPLOYEE") // ADMIN, EMPLOYEE
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+  auditLogs AuditLog[]
+}
+
+model Session {
+  id           String     @id @default(cuid())
+  userId       Int
+  user         User       @relation(fields: [userId], references: [id])
+  browser      String?
+  os           String?
+  screenSize   String?
+  ip           String?
+  location     String?
+  status       String     @default("ONLINE") // ONLINE, OFFLINE, IDLE
+  loginTime    DateTime   @default(now())
+  lastActivity DateTime   @default(now())
+  currentUrl   String?
+  pageViews    PageView[]
+}
+
+model PageView {
+  id        Int      @id @default(autoincrement())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id])
+  url       String
+  duration  Int      @default(0) // time spent in seconds
+  timestamp DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  details   String?
+  timestamp DateTime @default(now())
+}
