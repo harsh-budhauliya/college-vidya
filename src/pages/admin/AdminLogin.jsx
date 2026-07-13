@@ -21,7 +21,12 @@ export default function AdminLogin({ onLogin }) {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        throw new Error(`Server returned an invalid response (Status: ${response.status}). Check Vercel Function Logs.`);
+      }
 
       if (response.ok) {
         localStorage.setItem("adminToken", data.token);
@@ -32,7 +37,7 @@ export default function AdminLogin({ onLogin }) {
         setError(data.error || "Login failed");
       }
     } catch (err) {
-      setError("Failed to connect to the server. Is the backend running?");
+      setError(err.message || "Failed to connect to the server. Is the backend running?");
     } finally {
       setLoading(false);
     }
