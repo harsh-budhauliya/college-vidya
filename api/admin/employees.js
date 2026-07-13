@@ -55,8 +55,58 @@ export default async function handler(req, res) {
           lastSeen: latestSession ? latestSession.lastActivity : emp.createdAt,
           currentUrl: latestSession?.currentUrl || '',
           location: latestSession?.location || '',
-          device: `${latestSession?.os || ''} ${latestSession?.browser || ''}`.trim()
+          device: `${latestSession?.os || ''} ${latestSession?.browser || ''}`.trim(),
+          tabStatus: latestSession?.tabStatus || 'UNKNOWN',
+          tabCount: latestSession?.tabCount || 0,
+          loginTime: latestSession?.loginTime || null
         };
+      });
+
+      // Add anonymous active sessions (last 24 hours)
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const anonymousSessions = await prisma.session.findMany({
+        where: { 
+          userId: null,
+          lastActivity: { gte: oneDayAgo } 
+        },
+        orderBy: { lastActivity: 'desc' }
+      });
+
+      const ipMap = {};
+      anonymousSessions.forEach(sess => {
+        if (!ipMap[sess.ip]) ipMap[sess.ip] = sess; 
+      });
+
+      Object.values(ipMap).forEach((sess, idx) => {
+        const isOnline = sess.status === 'ONLINE' && (new Date() - new Date(sess.lastActivity)) < 60000;
+        const isIdle = sess.status === 'ONLINE' && !isOnline && (new Date() - new Date(sess.lastActivity)) < 300000;
+        
+        enrichedEmployees.push({
+          id: sess.id,
+          name: `Visitor (${sess.ip || 'Unknown IP'})`,
+          email: 'Anonymous',
+          phone: '',
+          department: 'Guest',
+          designation: 'Visitor',
+          team: '',
+          profilePic: null,
+          createdAt: sess.loginTime,
+          status: isOnline ? 'Online' : (isIdle ? 'Idle' : 'Offline'),
+          lastSeen: sess.lastActivity,
+          currentUrl: sess.currentUrl || '',
+          location: sess.location || '',
+          device: `${sess.os || ''} ${sess.browser || ''}`.trim(),
+          tabStatus: sess.tabStatus || 'UNKNOWN',
+          tabCount: sess.tabCount || 0,
+          loginTime: sess.loginTime
+        });
+      });
+
+      // Sort by online first, then by lastSeen
+      enrichedEmployees.sort((a, b) => {
+        if (a.status === 'Online' && b.status !== 'Online') return -1;
+        if (a.status !== 'Online' && b.status === 'Online') return 1;
+        return new Date(b.lastSeen) - new Date(a.lastSeen);
       });
 
       return res.status(200).json(enrichedEmployees);
