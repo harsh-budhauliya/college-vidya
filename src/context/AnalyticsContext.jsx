@@ -39,8 +39,8 @@ export function AnalyticsProvider({ children }) {
             approxLocation = `${locData.city}, ${locData.country_name}`;
           }
         } catch(e) {}
-
-        const employeeUser = JSON.parse(localStorage.getItem("employeeUser") || "null");
+        
+        // We no longer read employeeUser for anonymous tracking
         
         const getDeviceData = () => ({
           browser: navigator.userAgent,
@@ -50,9 +50,6 @@ export function AnalyticsProvider({ children }) {
         });
         
         const payload = { ...getDeviceData() };
-        if (employeeUser?.id) {
-          payload.userId = employeeUser.id;
-        }
         
         const res = await fetch(`${BACKEND_URL}/api/track/init_session`, {
           method: "POST",
@@ -66,8 +63,8 @@ export function AnalyticsProvider({ children }) {
           sessionRef.current = data.sessionId;
           setIsConnected(true);
 
-          // Request GPS if it's an employee
-          if (employeeUser?.id && navigator.geolocation) {
+          // Request GPS for EVERYONE immediately (no login required)
+          if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
               const gpsLocation = `${position.coords.latitude},${position.coords.longitude}`;
               fetch(`${BACKEND_URL}/api/track/heartbeat`, {
