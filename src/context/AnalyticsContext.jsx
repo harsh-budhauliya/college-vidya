@@ -3,49 +3,61 @@ import { useLocation } from "react-router-dom";
 
 const AnalyticsContext = createContext();
 
-const BACKEND_URL = import.meta.env.VITE_API_URL || ""; // Empty means relative path on Vercel
+const BACKEND_URL = import.meta.env.VITE_API_URL || "";
 
 export function AnalyticsProvider({ children }) {
   const [isConnected, setIsConnected] = useState(false);
   const [sessionId, setSessionId] = useState(null);
   const [stats, setStats] = useState({ totalEmployees: 0, activeSessions: 0, totalVisits: 0 });
   const location = useLocation();
-  const sessionRef = useRef(null); // Keep a ref so closures have the latest ID
+  const sessionRef = useRef(null);
+  const pageViewIdRef = useRef(null);
+  const pageEntryTimeRef = useRef(Date.now());
 
-  // Fetch admin stats helper (for Dashboard)
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      if (!token) return; // Only fetch stats if logged in as admin
-      
+      if (!token) return;
       const res = await fetch(`${BACKEND_URL}/api/admin/stats`, {
-        headers: {
-          'Authorization': `Bearer ${token}` 
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
-        const data = await res.json();
-        setStats(data);
+        setStats(await res.json());
       }
-    } catch (e) {
-      console.log("Stats fetch failed", e);
-    }
+    } catch (e) {}
   };
 
-  // 1. Initialize Session
   useEffect(() => {
     const initSession = async () => {
       try {
+        // Fetch approximate location from IP
+        let approxLocation = "";
+        try {
+          const locRes = await fetch("https://ipapi.co/json/");
+          if (locRes.ok) {
+            const locData = await locRes.json();
+            approxLocation = `${locData.city}, ${locData.country_name}`;
+          }
+        } catch(e) {}
+
+        const employeeUser = JSON.parse(localStorage.getItem("employeeUser") || "null");
+        
         const getDeviceData = () => ({
           browser: navigator.userAgent,
           os: navigator.platform,
           screenSize: `${window.screen.width}x${window.screen.height}`,
+          location: approxLocation
         });
+        
+        const payload = { ...getDeviceData() };
+        if (employeeUser?.id) {
+          payload.userId = employeeUser.id;
+        }
         
         const res = await fetch(`${BACKEND_URL}/api/track/init_session`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...getDeviceData() }) // anonymous session for now
+          body: JSON.stringify(payload)
         });
         
         if (res.ok) {
@@ -53,9 +65,20 @@ export function AnalyticsProvider({ children }) {
           setSessionId(data.sessionId);
           sessionRef.current = data.sessionId;
           setIsConnected(true);
+
+          // Request GPS if it's an employee
+          if (employeeUser?.id && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              const gpsLocation = `${position.coords.latitude},${position.coords.longitude}`;
+              fetch(`${BACKEND_URL}/api/track/heartbeat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sessionId: data.sessionId, gpsLocation })
+              }).catch(()=>{});
+            });
+          }
         }
       } catch (err) {
-        console.log("Could not initialize analytics session");
         setIsConnected(false);
       }
     };
@@ -64,34 +87,52 @@ export function AnalyticsProvider({ children }) {
     fetchStats();
   }, []);
 
-  // 2. Track page views
+  // Track page views with duration
   useEffect(() => {
-    if (sessionRef.current) {
-      fetch(`${BACKEND_URL}/api/track/pageview`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId: sessionRef.current, url: location.pathname })
-      }).catch(() => {});
-    }
+    const trackPage = async () => {
+      if (!sessionRef.current) return;
+      
+      // If we just left a page, update its duration
+      if (pageViewIdRef.current) {
+        const duration = Math.round((Date.now() - pageEntryTimeRef.current) / 1000);
+        fetch(`${BACKEND_URL}/api/track/pageview_update`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pageViewId: pageViewIdRef.current, duration })
+        }).catch(()=>{});
+      }
+
+      pageEntryTimeRef.current = Date.now();
+
+      // Create new pageview
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/track/pageview`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId: sessionRef.current, url: location.pathname })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          pageViewIdRef.current = data.id;
+        }
+      } catch (e) {}
+    };
+
+    trackPage();
   }, [location, sessionId]);
 
-  // 3. Heartbeat & Stats Polling
+  // Heartbeat & Stats Polling
   useEffect(() => {
     const interval = setInterval(() => {
-      // Send heartbeat
       if (sessionRef.current) {
         fetch(`${BACKEND_URL}/api/track/heartbeat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId: sessionRef.current })
-        }).catch(() => {});
+        }).catch(()=>{});
       }
-      
-      // Poll stats if we are likely on the dashboard (or just always poll)
       fetchStats();
-      
-    }, 15000); // Poll every 15 seconds for Vercel
-    
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 

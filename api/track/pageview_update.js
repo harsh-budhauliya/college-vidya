@@ -10,22 +10,17 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') { return res.status(405).json({ error: 'Method Not Allowed' }); }
 
   try {
-    const { userId, browser, os, screenSize, location } = req.body;
-    
-    // In Vercel, req.headers['x-forwarded-for'] contains the IP
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const { pageViewId, duration } = req.body;
+    if (!pageViewId) return res.status(400).json({ error: 'Missing pageViewId' });
 
-    const data = {
-      browser, os, screenSize, ip, location, status: "ONLINE"
-    };
+    await prisma.pageView.update({
+      where: { id: pageViewId },
+      data: { duration: parseInt(duration) || 0 }
+    });
 
-    if (userId) { data.userId = userId; }
-
-    const session = await prisma.session.create({ data });
-
-    res.status(200).json({ sessionId: session.id });
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to initialize session" });
+    res.status(500).json({ error: "Failed to update pageview" });
   }
 }

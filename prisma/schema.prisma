@@ -10,10 +10,15 @@ generator client {
 model User {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
   email     String     @unique
-  password  String
-  name      String
-  role      String     @default("EMPLOYEE") // ADMIN, EMPLOYEE
-  createdAt DateTime   @default(now())
+  password    String
+  name        String
+  phone       String?
+  department  String?
+  designation String?
+  team        String?
+  role        String     @default("EMPLOYEE") // ADMIN, EMPLOYEE
+  profilePic  String?
+  createdAt   DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   sessions  Session[]
   auditLogs AuditLog[]
@@ -27,7 +32,8 @@ model Session {
   os           String?
   screenSize   String?
   ip           String?
-  location     String?
+  location     String?    // Approximate location from IP
+  gpsLocation  String?    // Exact location from browser permission
   status       String     @default("ONLINE") // ONLINE, OFFLINE, IDLE
   loginTime    DateTime   @default(now())
   lastActivity DateTime   @default(now())

@@ -13,6 +13,8 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/Dashboard';
 import EmployeesList from './pages/admin/EmployeesList';
 import AdminLogin from './pages/admin/AdminLogin';
+import EmployeeLogin from './pages/EmployeeLogin';
+import SessionsList from './pages/admin/SessionsList';
 
 function AdminWrapper() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('adminToken'));
@@ -29,6 +31,7 @@ function App() {
     <BrowserRouter>
       <AnalyticsProvider>
         <Routes>
+          <Route path="/login" element={<EmployeeLogin />} />
           <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="university-data" element={<MockCalls />} />
@@ -59,7 +62,8 @@ function App() {
         <Route path="/admin" element={<AdminWrapper />}>
             <Route index element={<AdminDashboard />} />
             <Route path="employees" element={<EmployeesList />} />
-            <Route path="reports" element={<div className="p-8 font-bold text-gray-500">Reports Placeholder</div>} />
+            <Route path="sessions" element={<SessionsList />} />
+            <Route path="auditlogs" element={<div className="p-8 font-bold text-gray-500">Audit Logs Placeholder</div>} />
             <Route path="settings" element={<div className="p-8 font-bold text-gray-500">Settings Placeholder</div>} />
           </Route>
         </Routes>

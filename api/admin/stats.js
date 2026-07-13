@@ -43,10 +43,41 @@ export default async function handler(req, res) {
     
     const totalVisits = await prisma.pageView.count();
     
+    // Get page views for the last 7 days for the chart
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const recentViews = await prisma.pageView.findMany({
+      where: { timestamp: { gte: sevenDaysAgo } },
+      select: { timestamp: true }
+    });
+
+    const chartDataMap = {};
+    for(let i=6; i>=0; i--) {
+      const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+      const name = d.toLocaleDateString('en-US', { weekday: 'short' });
+      chartDataMap[name] = 0;
+    }
+    
+    recentViews.forEach(v => {
+      const name = v.timestamp.toLocaleDateString('en-US', { weekday: 'short' });
+      if(chartDataMap[name] !== undefined) chartDataMap[name]++;
+    });
+
+    const activityChart = Object.keys(chartDataMap).map(key => ({
+      name: key,
+      visits: chartDataMap[key]
+    }));
+
+    // Device breakdown
+    const recentSessions = await prisma.session.findMany({
+      where: { loginTime: { gte: sevenDaysAgo } },
+      select: { os: true, browser: true }
+    });
+
     res.status(200).json({
       totalEmployees,
       activeSessions,
-      totalVisits
+      totalVisits,
+      activityChart
     });
   } catch (error) {
     console.error(error);

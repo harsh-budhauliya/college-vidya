@@ -1,13 +1,15 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, Settings, LogOut } from "lucide-react";
+import { useState } from 'react';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { LayoutDashboard, Users, FileText, Settings, LogOut, Menu, X, Activity, ScrollText } from 'lucide-react';
 
 export default function AdminLayout() {
   const location = useLocation();
 
   const navigation = [
-    { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { name: "Employees", href: "/admin/employees", icon: Users },
-    { name: "Reports", href: "/admin/reports", icon: FileText },
+    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { name: 'Live Tracking', href: '/admin/employees', icon: Users },
+    { name: 'Session Logs', href: '/admin/sessions', icon: Activity },
+    { name: 'Audit Logs', href: '/admin/auditlogs', icon: ScrollText },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 
