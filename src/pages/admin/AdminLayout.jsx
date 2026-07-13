@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, FileText, Settings, LogOut, Menu, X, Activity, ScrollText } from 'lucide-react';
 
 export default function AdminLayout() {
