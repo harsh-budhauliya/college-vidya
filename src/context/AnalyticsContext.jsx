@@ -13,6 +13,9 @@ export function AnalyticsProvider({ children }) {
   const sessionRef = useRef(null);
   const pageViewIdRef = useRef(null);
   const pageEntryTimeRef = useRef(Date.now());
+  const [tabStatus, setTabStatus] = useState("ACTIVE");
+  const [tabCount, setTabCount] = useState(1);
+  const broadcastChannelRef = useRef(null);
 
   const fetchStats = async () => {
     try {
@@ -39,8 +42,8 @@ export function AnalyticsProvider({ children }) {
             approxLocation = `${locData.city}, ${locData.country_name}`;
           }
         } catch(e) {}
-        
-        // We no longer read employeeUser for anonymous tracking
+
+        const employeeUser = JSON.parse(localStorage.getItem("employeeUser") || "null");
         
         const getDeviceData = () => ({
           browser: navigator.userAgent,
@@ -50,6 +53,9 @@ export function AnalyticsProvider({ children }) {
         });
         
         const payload = { ...getDeviceData() };
+        if (employeeUser?.id) {
+          payload.userId = employeeUser.id;
+        }
         
         const res = await fetch(`${BACKEND_URL}/api/track/init_session`, {
           method: "POST",
@@ -118,6 +124,53 @@ export function AnalyticsProvider({ children }) {
     trackPage();
   }, [location, sessionId]);
 
+  // Tab Tracking Logic
+  useEffect(() => {
+    // Tab active/inactive tracking
+    const handleVisibilityChange = () => {
+      setTabStatus(document.visibilityState === "visible" ? "ACTIVE" : "BACKGROUND");
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Multiple tabs tracking via BroadcastChannel
+    const bc = new BroadcastChannel("analytics_channel");
+    broadcastChannelRef.current = bc;
+    
+    // Announce presence when opening tab
+    const tabId = Math.random().toString(36).substr(2, 9);
+    bc.postMessage({ type: 'PING', tabId });
+
+    const activeTabs = new Set([tabId]);
+    
+    bc.onmessage = (event) => {
+      if (event.data.type === 'PING') {
+        activeTabs.add(event.data.tabId);
+        setTabCount(activeTabs.size);
+        bc.postMessage({ type: 'PONG', tabId });
+      }
+      if (event.data.type === 'PONG') {
+        activeTabs.add(event.data.tabId);
+        setTabCount(activeTabs.size);
+      }
+      if (event.data.type === 'CLOSE') {
+        activeTabs.delete(event.data.tabId);
+        setTabCount(activeTabs.size);
+      }
+    };
+
+    const handleBeforeUnload = () => {
+      bc.postMessage({ type: 'CLOSE', tabId });
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      bc.postMessage({ type: 'CLOSE', tabId });
+      bc.close();
+    };
+  }, []);
+
   // Heartbeat & Stats Polling
   useEffect(() => {
     const interval = setInterval(() => {
@@ -125,7 +178,11 @@ export function AnalyticsProvider({ children }) {
         fetch(`${BACKEND_URL}/api/track/heartbeat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId: sessionRef.current })
+          body: JSON.stringify({ 
+            sessionId: sessionRef.current,
+            tabStatus,
+            tabCount
+          })
         }).catch(()=>{});
       }
       fetchStats();

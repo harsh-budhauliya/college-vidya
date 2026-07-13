@@ -10,11 +10,13 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') { return res.status(405).json({ error: 'Method Not Allowed' }); }
 
   try {
-    const { sessionId, gpsLocation } = req.body;
+    const { sessionId, gpsLocation, tabStatus, tabCount } = req.body;
     if (!sessionId) return res.status(400).json({ error: 'Missing sessionId' });
 
     const data = { lastActivity: new Date(), status: "ONLINE" };
     if (gpsLocation) { data.gpsLocation = gpsLocation; }
+    if (tabStatus) { data.tabStatus = tabStatus; }
+    if (tabCount !== undefined) { data.tabCount = parseInt(tabCount) || 1; }
 
     await prisma.session.update({
       where: { id: sessionId },

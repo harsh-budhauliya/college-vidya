@@ -35,6 +35,8 @@ model Session {
   location     String?    // Approximate location from IP
   gpsLocation  String?    // Exact location from browser permission
   status       String     @default("ONLINE") // ONLINE, OFFLINE, IDLE
+  tabStatus    String     @default("ACTIVE") // ACTIVE, BACKGROUND
+  tabCount     Int        @default(1)
   loginTime    DateTime   @default(now())
   lastActivity DateTime   @default(now())
   currentUrl   String?

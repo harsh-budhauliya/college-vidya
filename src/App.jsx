@@ -13,6 +13,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/Dashboard';
 import EmployeesList from './pages/admin/EmployeesList';
 import AdminLogin from './pages/admin/AdminLogin';
+import EmployeeLogin from './pages/EmployeeLogin';
 import SessionsList from './pages/admin/SessionsList';
 
 function AdminWrapper() {
@@ -30,6 +31,7 @@ function App() {
     <BrowserRouter>
       <AnalyticsProvider>
         <Routes>
+          <Route path="/login" element={<EmployeeLogin />} />
           <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="university-data" element={<MockCalls />} />
