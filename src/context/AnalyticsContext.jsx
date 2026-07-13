@@ -1,68 +1,26 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 const AnalyticsContext = createContext();
 
-// Connect to the backend socket server
-const socket = io("http://localhost:4000");
+const BACKEND_URL = import.meta.env.VITE_API_URL || ""; // Empty means relative path on Vercel
 
 export function AnalyticsProvider({ children }) {
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [isConnected, setIsConnected] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
   const [stats, setStats] = useState({ totalEmployees: 0, activeSessions: 0, totalVisits: 0 });
   const location = useLocation();
+  const sessionRef = useRef(null); // Keep a ref so closures have the latest ID
 
-  useEffect(() => {
-    socket.on("connect", () => setIsConnected(true));
-    socket.on("disconnect", () => setIsConnected(false));
-    
-    // Listen for live stat updates from backend
-    socket.on("live_stats_update", () => {
-      fetchStats();
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("live_stats_update");
-    };
-  }, []);
-
-  // Track page views on route change
-  useEffect(() => {
-    if (isConnected) {
-      socket.emit("track_pageview", { url: location.pathname });
-    }
-  }, [location, isConnected]);
-
-  // Initial setup: mock user ID 1 for now (in reality, get from auth)
-  useEffect(() => {
-    if (isConnected) {
-      const getDeviceData = () => ({
-        browser: navigator.userAgent,
-        os: navigator.platform,
-        screenSize: `${window.screen.width}x${window.screen.height}`,
-      });
-      socket.emit("init_session", { userId: 1, ...getDeviceData() });
-    }
-  }, [isConnected]);
-
-  // Heartbeat every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isConnected) socket.emit("heartbeat");
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [isConnected]);
-
-  // Fetch admin stats helper
+  // Fetch admin stats helper (for Dashboard)
   const fetchStats = async () => {
     try {
-      // In a real app, you would pass the JWT token here
-      // For this implementation plan, we will mock the request or rely on public stats for demo
-      const res = await fetch("http://localhost:4000/api/admin/stats", {
+      const token = localStorage.getItem("adminToken");
+      if (!token) return; // Only fetch stats if logged in as admin
+      
+      const res = await fetch(`${BACKEND_URL}/api/admin/stats`, {
         headers: {
-          // 'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}` 
         }
       });
       if (res.ok) {
@@ -70,13 +28,71 @@ export function AnalyticsProvider({ children }) {
         setStats(data);
       }
     } catch (e) {
-      console.log("Stats fetch skipped (requires auth token)");
+      console.log("Stats fetch failed", e);
     }
   };
 
+  // 1. Initialize Session
   useEffect(() => {
-    // Initial fetch
+    const initSession = async () => {
+      try {
+        const getDeviceData = () => ({
+          browser: navigator.userAgent,
+          os: navigator.platform,
+          screenSize: `${window.screen.width}x${window.screen.height}`,
+        });
+        
+        const res = await fetch(`${BACKEND_URL}/api/track/init_session`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: 1, ...getDeviceData() }) // mock userId 1
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          setSessionId(data.sessionId);
+          sessionRef.current = data.sessionId;
+          setIsConnected(true);
+        }
+      } catch (err) {
+        console.log("Could not initialize analytics session");
+        setIsConnected(false);
+      }
+    };
+    
+    initSession();
     fetchStats();
+  }, []);
+
+  // 2. Track page views
+  useEffect(() => {
+    if (sessionRef.current) {
+      fetch(`${BACKEND_URL}/api/track/pageview`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: sessionRef.current, url: location.pathname })
+      }).catch(() => {});
+    }
+  }, [location, sessionId]);
+
+  // 3. Heartbeat & Stats Polling
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Send heartbeat
+      if (sessionRef.current) {
+        fetch(`${BACKEND_URL}/api/track/heartbeat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId: sessionRef.current })
+        }).catch(() => {});
+      }
+      
+      // Poll stats if we are likely on the dashboard (or just always poll)
+      fetchStats();
+      
+    }, 15000); // Poll every 15 seconds for Vercel
+    
+    return () => clearInterval(interval);
   }, []);
 
   return (
