@@ -54,22 +54,18 @@ export default async function handler(req, res) {
     const offline = Math.max(0, totalEmployees - online);
 
     // Working today (sessions created or active today)
-    const workingToday = await prisma.session.count({
-      where: { lastActivity: { gte: startOfToday } }
-    });
-
-    const totalTodaysVisits = await prisma.pageView.count({
-      where: { timestamp: { gte: startOfToday } }
-    });
-
-    // New vs Returning (based on IP or session)
-    // For simplicity, let's say sessions created today that don't share an IP with older sessions are New.
-    // Instead of complex queries, we'll estimate:
     const todaysSessions = await prisma.session.findMany({
-      where: { loginTime: { gte: startOfToday } },
+      where: { lastActivity: { gte: startOfToday } },
       select: { ip: true }
     });
-    
+
+    const workingToday = todaysSessions.length;
+
+    // To ensure 1 device = 1 visit, we count unique IPs active today
+    const uniqueTodaysIps = new Set(todaysSessions.map(s => s.ip).filter(Boolean));
+    const totalTodaysVisits = uniqueTodaysIps.size;
+
+    // New vs Returning (based on IP or session)
     const previousSessions = await prisma.session.findMany({
       where: { loginTime: { lt: startOfToday } },
       select: { ip: true }
@@ -79,7 +75,6 @@ export default async function handler(req, res) {
     let newEmployees = 0;
     let returningEmployees = 0;
     
-    const uniqueTodaysIps = new Set(todaysSessions.map(s => s.ip).filter(Boolean));
     uniqueTodaysIps.forEach(ip => {
       if (previousIps.has(ip)) returningEmployees++;
       else newEmployees++;
